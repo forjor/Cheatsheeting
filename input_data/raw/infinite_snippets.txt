@@ -1,0 +1,769 @@
+
+
+
+jordan.edsall@fg-jedsall ~ % cat saveandquit.sh 
+#!/bin/bash
+
+function saveandquit() {
+  cd /Users/jordan.edsall/RecordsAndArchives
+  export DATE="$(date +%s-%y-%m-%d)"
+  echo "$DATE" >> RawData/TerminalHistory/$DATE
+  history -n 0 >> RawData/TerminalHistory/$DATE
+  history -p
+  exit 0
+}
+
+# (Earlier attempts...)
+jordan.edsall@fg-jedsall RecordsAndArchives % date +%s-%y-%m-%d
+1706275748-24-01-26
+jordan.edsall@fg-jedsall RecordsAndArchives % mkdir RawData/TerminalHistory
+jordan.edsall@fg-jedsall RecordsAndArchives % touch RawData/TerminalHistory/1706275748-24-01-26 
+jordan.edsall@fg-jedsall RecordsAndArchives % history -n 0 > RawData/TerminalHistory/1706275748-24-01-26
+jordan.edsall@fg-jedsall RecordsAndArchives % history -p
+
+alias saveandquit="cd /Users/jordan.edsall/RecordsAndArchives; export DATE=$(date +%s-%y-%m-%d); echo $DATE >> RawData/TerminalHistory/$DATE; history -n 0 >> RawData/TerminalHistory/$DATE; history -p; exit 0"
+
+vscode ➜ /workspaces/day-to-day-dev-container $ aws configure sso
+SSO session name (Recommended): firstsession
+SSO start URL [None]: https://d-nope.awsapps.com/start#
+SSO region [None]: us-east-2
+SSO registration scopes [sso:account:access]:
+Attempting to automatically open the SSO authorization page in your default browser.
+If the browser does not open or you wish to use a different device to authorize this request, open the following URL:
+
+https://device.sso.us-east-2.amazonaws.com/
+
+Then enter the code:
+
+There are 22 AWS accounts available to you.
+Using the account ID nope
+The only role available to you is: AWSAdministratorAccess
+Using the role name "AWSAdministratorAccess"
+CLI default client Region [None]: us-east-2
+CLI default output format [None]:
+CLI profile name [AWSAdministratorAccess-nope]:
+
+To use this profile, specify the profile name using --profile, as shown:
+
+aws s3 ls --profile AWSAdministratorAccess-nope
+
+
+vscode ➜ /workspaces/day-to-day-dev-container $ cat ~/.aws/config 
+[profile AWSAdministratorAccess-nope]
+sso_session = firstsession
+sso_account_id = nope
+sso_role_name = AWSAdministratorAccess
+region = us-east-2
+[sso-session firstsession]
+sso_start_url = https://d-nope.awsapps.com/start#
+sso_region = us-east-2
+sso_registration_scopes = sso:account:access
+
+
+curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+
+jordan.edsall@fg-jedsall RecordsAndArchives % date +%s-%y-%m-%d
+1706275748-24-01-26
+jordan.edsall@fg-jedsall RecordsAndArchives % mkdir RawData/TerminalHistory
+jordan.edsall@fg-jedsall RecordsAndArchives % touch RawData/TerminalHistory/1706275748-24-01-26 
+jordan.edsall@fg-jedsall RecordsAndArchives % history -n 0 > RawData/TerminalHistory/1706275748-24-01-26
+jordan.edsall@fg-jedsall RecordsAndArchives % history -p
+
+
+
+
+# Push it!
+git add --all
+date;git commit -m "feat/section1: Create the project basics and first hello world file."
+git push -u origin HEAD:feat/section1
+
+# Fix it!
+git reset HEAD~
+git status
+git add --all
+date;git commit -m "feat/section1: Create the project basics and first hello world file."
+git push -f -u origin HEAD:feat/section1
+
+grep -R openid .
+
+aws route53 list-hosted-zones
+
+aws route53 list-hosted-zones --query 'HostedZones[0].Name'
+
+
+
+
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# Download the binary
+curl -LO https://github.com/getsops/sops/releases/download/v3.8.1/sops-v3.8.1.linux.arm64
+
+# Move the binary in to your PATH
+sudo mv sops-v3.8.1.linux.arm64 /usr/local/bin/sops
+
+# Make the binary executable
+chmod +x /usr/local/bin/sops
+
+
+
+terragrunt render-json;cat terragrunt_rendered.json
+
+
+terragrunt render-json;cat terragrunt_rendered.json | grep --color='auto' local
+
+
+terragrunt render-json;cat terragrunt_rendered.json | grep --color='auto' depend; rm terragrunt_rendered.json
+
+
+rm -rf `find . -name '.terraform'`; rm -rf `find . -name '.terraform.lock*'`; rm -rf `find . -name '.terragrunt-cache'`
+
+
+
+
+
+
+git branch -m feat/nope675-Complete_terragrunt_migration feat/nope675-Complete_terragrunt_migration_1
+
+
+
+
+for i in /workspaces/cen-terraform-ansible/terragrunt/nope-dev/_global/network/subdomain /workspaces/cen-terraform-ansible/terragrunt/nope-dev/us-east-2/dev/network/vpc /workspaces/cen-terraform-ansible/terragrunt/nope-dev/us-east-2/dev/network/waf; do echo $i; echo -e "\n\n\n"; cd $i; terragrunt plan; echo -e "\n\n\n" ; done
+
+
+for (( i=0 ; i < 10 ; i++ )) ; do echo $i ; done
+
+
+
+export TF_VAR_atlantis_github_app_key_b64="ZmFrZQ=="
+export TF_VAR_atlantis_github_app_webhook_secret="fake"
+
+
+
+
+
+global variables - from terraform cloud - how do these compare to capabilities atlantis offers?
+
+
+
+
+
+Plan for `terragrunt/nope-dev/_global/network/global-accelerator/` (applied):
+```
+Changes to Outputs:
+  + global_accelerator_enabled = true
+```
+
+
+
+
+
+
+
+
+
+rm -rf `find . -name '.terraform'`; rm -rf `find . -name '.terraform.lock*'`; rm -rf `find . -name '.terragrunt-cache'`;reset;clear;terragrunt apply
+
+
+cycode and snyk aquasec and fortify on demand
+cycode - good at blocking PRs if high/critical are coming in
+
+
+
+aws secretsmanager get-secret-value --secret-id test-secret-de8cff43-7f9c-9000-20ab-ce8f1943932f
+aws secretsmanager get-secret-value --secret-id test-secret-de8cff43-7f9c-9000-20ab-ce8f1943932f --region us-east-1 --version-stage AWSPREVIOUS
+
+
+
+rm -rf `find . -name '.terraform'`; rm -rf `find . -name '.terraform.lock*'`; rm -rf `find . -name '.terragrunt-cache'`;
+
+
+
+
+
+
+
+curl "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/ubuntu_arm64/session-manager-plugin.deb" -o "session-manager-plugin.deb"
+
+sudo dpkg -i session-manager-plugin.deb
+
+aws ecs update-service --cluster dev-use2-nope-ecs-cluster --service dummy-service-1 --force-new-deployment --enable-execute-command
+
+aws ecs execute-command --cluster dev-use2-nope-ecs-cluster \
+    --task 96914bccfcc5451dbf262a451264bdef \
+    --container dummy-service-1 \
+    --interactive \
+    --command "/bin/bash"
+
+
+
+aws ecs describe-tasks --cluster dev-use2-nope-ecs-cluster --tasks arn:aws:ecs:us-east-2:nope:task/dev-use2-nope-ecs-cluster/ce721c2a19d04b94b570618cce6f3470
+
+
+
+git@github.com:aws-containers/amazon-ecs-exec-checker.git
+
+
+
+
+
+{
+	"Version": "2012-10-17",
+	"Statement": [
+		{
+			"Effect": "Allow",
+			"Action": [
+				"ssmmessages:CreateControlChannel",
+				"ssmmessages:CreateDataChannel",
+				"ssmmessages:OpenControlChannel",
+				"ssmmessages:OpenDataChannel"
+			],
+			"Resource": "*"
+		},
+		{
+			"Effect": "Allow",
+			"Action": [
+				"logs:DescribeLogGroups"
+			],
+			"Resource": "*"
+		},
+		{
+			"Effect": "Allow",
+			"Action": [
+				"logs:CreateLogStream",
+				"logs:DescribeLogStreams",
+				"logs:PutLogEvents"
+			],
+			"Resource": "arn:aws:logs:region:account-id:log-group:/aws/ecs/cloudwatch-log-group-name:*"
+		}
+	]
+}
+
+
+openssl s_client -connect encrypted.1234id.clustercfg.euw1.cache.amazonaws.com:6379
+
+# Emulated AMD64 docker homebrew linux on Mac ARM64:
+
+FROM --platform=linux/amd64 ubuntu:22.04
+
+CMD ["sleep", "10000000"]
+
+apt update -y
+for (( i=0 ; i < 30 ; i++ )) ; do echo "" ; done
+install -y build-essential
+for (( i=0 ; i < 30 ; i++ )) ; do echo "" ; done
+apt install git -y
+for (( i=0 ; i < 30 ; i++ )) ; do echo "" ; done
+apt install -y curl
+for (( i=0 ; i < 30 ; i++ )) ; do echo "" ; done
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+for (( i=0 ; i < 30 ; i++ )) ; do echo "" ; done
+(echo; echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"') >> /root/.bashrc
+for (( i=0 ; i < 30 ; i++ )) ; do echo "" ; done
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+for (( i=0 ; i < 30 ; i++ )) ; do echo "" ; done
+
+
+apt install -y procps file
+
+brew install gcc
+
+
+
+
+
+# Python based attempt for non-brew
+
+FROM python:3.12.2
+
+CMD ["sleep", "10000000"]
+
+
+pip install pre-commit
+
+curl -sSLo ./terraform-docs.tar.gz https://terraform-docs.io/dl/v0.17.0/terraform-docs-v0.17.0-$(uname)-amd64.tar.gz
+tar -xzf terraform-docs.tar.gz
+chmod +x terraform-docs
+mv terraform-docs /usr/bin/terraform-docs
+
+curl -sSLo install_linux.sh https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh
+bash ./install_linux.sh
+
+curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v0.18.3
+
+
+
+
+apt update -y
+apt install -y wget apt-transport-https gnupg lsb-release
+wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | apt-key add -
+echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list.d/trivy.list
+apt update -y
+apt install -y trivy
+
+
+
+    1  
+    2  sudo apt install -y python3.12
+    3  sudo apt install -y python3.11
+    4  which python
+    5  
+    6  ls -latr
+    7  unzip python.tar 
+    8  mv python.tar python.tgz
+    9  
+   10  
+   11  ./configure
+   12  make
+   13  make install
+   14  which python
+   15  ls -latr
+   16  which python3
+   17  python3 --version
+   18  which pip
+   19  which pip3
+   20  apt install -y python-is-python3
+   21  which python
+   22  python --version
+   23  pip --version
+   24  pip3
+   25  history
+
+apt update -y
+for (( i=0 ; i < 30 ; i++ )) ; do echo "" ; done
+curl -sSo python.tgz https://www.python.org/ftp/python/3.12.2/Python-3.12.2.tgz
+for (( i=0 ; i < 30 ; i++ )) ; do echo "" ; done
+tar -xvzf python.tgz
+for (( i=0 ; i < 30 ; i++ )) ; do echo "" ; done
+cd Python-3.12.2/
+for (( i=0 ; i < 30 ; i++ )) ; do echo "" ; done
+./configure
+for (( i=0 ; i < 30 ; i++ )) ; do echo "" ; done
+make
+for (( i=0 ; i < 30 ; i++ )) ; do echo "" ; done
+make install
+for (( i=0 ; i < 30 ; i++ )) ; do echo "" ; done
+apt install -y python-is-python3
+
+
+
+
+
+
+echo -n Welcome | md5sum
+83218ac34c1834c26781fe4bde918ee4  -
+vscode ➜ /workspaces/cen-terraform-module-nope-secrets-manager/examples/complete (feat/nope-126-Create_nope_secrets_manager) $ echo ${FOO:0:10}
+bar2
+vscode ➜ /workspaces/cen-terraform-module-nope-secrets-manager/examples/complete (feat/nope-126-Create_nope_secrets_manager) $ echo ${FOO:0:2}
+ba
+vscode ➜ /workspaces/cen-terraform-module-nope-secrets-manager/examples/complete (feat/nope-126-Create_nope_secrets_manager) $ export SIGNATURE=$(echo -n Welcome | md5sum)
+vscode ➜ /workspaces/cen-terraform-module-nope-secrets-manager/examples/complete (feat/nope-126-Create_nope_secrets_manager) $ echo ${SIGNATURE:0:5}
+83218
+vscode ➜ /workspaces/cen-terraform-module-nope-secrets-manager/examples/complete (feat/nope-126-Create_nope_secrets_manager) $ echo ${SIGNATURE:0:20}
+83218ac34c1834c26781
+vscode ➜ /workspaces/cen-terraform-module-nope-secrets-manager/examples/complete (feat/nope-126-Create_nope_secrets_manager) $ echo -n We | md5sum
+
+
+git commit -S -m "feat: [nope-179] Add improved pre-commit config for trivy."
+git reset HEAD~
+git push origin -u HEAD:feat/nope-179-Upgrade_trivy_config
+
+
+
+
+
+## Description
+
+This PR improves the pre-commit hook trivy config so the single `trivy.yaml` ignores downloaded modules and is reused throughout submodules.
+
+
+## Checklist:
+
+- [x] **Pre-commit hooks:**
+  - [x] pre-commit hook is setup `make ensure_pre_commit`
+  - [x] Ran `make pre_commit_tests`
+- [x] **Code Quality:**
+  - [x] Terraform modules is versioned appropriately using tags
+- [x] **Security:**
+  - [x] Secrets or sensitive data are not hard-coded into the Terraform code
+- [x] **Validation and Testing:**
+  - [x] Any changes have been tested in a non-production environment (if applicable)
+- [x] **Documentation:**
+  - [x] Any required variables or input parameters are documented in the README or associated documentation
+  - [x] Impact on existing infrastructure, if any, is documented
+
+
+git config --global gpg.format ssh
+git config --global user.signingkey ~/.ssh/id_ed25519.pub
+git commit -S -m "YOUR_COMMIT_MESSAGE"
+
+
+## Checklist:
+- [x] **Code Quality:**
+  - [x] Terraform modules are versioned appropriately using tags
+  - [x] Code is properly formatted using `terraform fmt` and `tflint –-recursive`
+- [x] **Security:**
+  - [x] Secrets or sensitive data are not hard-coded into the Terraform code
+  - [ ] Code was validated by running `tfsec --exclude-downloaded-modules .`
+- [x] **Validation and Testing:**
+  - [x] Terraform plan has been reviewed, verified for accuracy, and posted with the PR.
+  - [x] Any changes have been tested in a non-production environment (if applicable)
+- [x] **Documentation:**
+  - [x] Any required variables or input parameters are documented in the README or associated documentation
+  - [x] Impact on existing infrastructure, if any, is documented
+
+
+
+# Create a random 28 character string
+tr -dc A-Za-z0-9 </dev/urandom | head -c 28; echo
+
+
+<service>.<optional-compute-code>.<b/g>.<env:if-different>.<regionshort>.<team>.<tier>.<domain>
+<service>.<optional-compute-code>.<env:if-different>.<regionshort>.<team>.<tier>.<domain>
+<service>.<optional-compute-code>.<env:if-different>.<team>.<tier>.<domain>
+
+
+git switch -c 
+
+<details>
+  <summary>Changes for `nope-test/`: </summary>
+
+```
+
+```
+</details>
+
+<details>
+  <summary>Changes for `run-all plan` in `nope-dev/`: </summary>
+
+```
+
+```
+</details>
+
+Yes we do - but it doesn't tell us what we should be using for our apex domains, it works with them:
+Regional direct - <service>.<optional-compute-code>.<b/g>.<env:if-different>.<regionshort>.<team>.<tier>.<domain>
+Regional switched - <service>.<optional-compute-code>.<env:if-different>.<regionshort>.<team>.<tier>.<domain>
+Global - <service>.<optional-compute-code>.<env:if-different>.<team>.<tier>.<domain>
+And if you simplify it for the common case:
+Regional direct - <service>.<b/g>.<regionshort>.<team>.<tier>.<domain>
+Regional switched - <service>.<regionshort>.<team>.<tier>.<domain>
+Global - <service>.<team>.<tier>.<domain>
+Examples:
+Regional direct - game-server.a.use2.nope.nopeapi.games
+Regional switched - game-server.use2.nope.nopeapi.games
+Global - game-server.nope.nopeapi.games
+
+
+
+
+
+curl -H 'Cache-Control: no-cache, no-store' -w "@curl-format.txt" -s https://mvji4fkb6vamb8.unayvfudyovys5.nope.com/api/Player/1976329f-a8e9-481b-98ef-3c8b07c460d3/Kom%20nope/staging/Segments
+
+cat << EOF > curl-format.txt
+     time_namelookup:  %{time_namelookup}s\n
+        time_connect:  %{time_connect}s\n
+     time_appconnect:  %{time_appconnect}s\n
+    time_pretransfer:  %{time_pretransfer}s\n
+       time_redirect:  %{time_redirect}s\n
+  time_starttransfer:  %{time_starttransfer}s\n
+                     ----------\n
+          time_total:  %{time_total}s\n
+EOF
+
+
+
+
+<details>
+  <summary>Changes for `nope-test/_global/sops/init`: </summary>
+
+```terraform
+
+```
+</details>
+
+
+
+pbcopy
+
+
+
+# Debugging tf
+export TF_LOG=DEBUG
+
+
+terragrunt plan > /workspaces/cen-terraform-ansible/temp_delete.log 2>&1
+
+
+echo "helm upgrade -i external-dns bitnami/external-dns   --namespace ${EXTERNALDNS_NAMESPACE_NAME}   --set provider=aws   --set aws.zoneType=public   --set aws.region=${AWS_REGION}   --set policy=sync   --set domainFilters[0]=/"${HOSTED_ZONE_NAME}/"   --set ingressClassFilters[0]=alb   --set txtOwnerId=/"${CLUSTER_NAME}-${HOSTED_ZONE_ID}/"   --set serviceAccount.create=true   --set serviceAccount.name=je-kaeyg9ax-example-eks-dns-sa   --set /"serviceAccount.annotations.eks\.amazonaws\.com/role-arn=${EXTERNALDNS_IAM_ROLE_ARN}/""
+
+arn:aws:iam::nope:role/je-kaeyg9AX-example-eks-externaldns-irsa-role/
+arn:aws:iam::nope:role/je-kaeyg9ax-example-eks-externaldns-irsa-role
+
+
+
+
+curl --request GET \
+  --url https://api.pagerduty.com/incident_workflows/actions?cursor=WyJwYWdlcmR1dHkuY29tOmh0dHAtYXBpOnNlbmQtcGF0Y2gtcmVxdWVzdDozIl0= \
+  --header 'Accept: application/json' \
+  --header 'Authorization: Token token=u+DB9SMJ7NzGSDzxKUgQ' \
+  --header 'Content-Type: application/json'
+
+
+
+terragrunt apply --auto-approve > /tmp/tg_pd_apply.log 2>&1
+
+curl --request POST \
+  --url https://api.pagerduty.com/incident_workflows \
+  --header 'Accept: application/json' \
+  --header 'Authorization: Token token=u+DB9SMJ7NzGSDzxKUgQ' \
+  --header 'Content-Type: application/json' \
+  --data '{
+  "incident_workflow": {
+    "name": "API Example Incident Workflow",
+    "description": "This Incident Workflow is an API example",
+    "team": {"type": "team_reference", "id": "PD7SLPV"},
+    "steps": [
+      {
+        "name": "Send Status Update",
+        "action_configuration": {
+          "action_id": "pagerduty.com:incident-workflows:send-status-update:1",
+          "inputs": [
+            {
+              "name": "Message",
+              "value": "Example status message sent on {{current_date}}"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}'
+
+curl --request GET \
+  --url https://api.pagerduty.com/incident_workflows/PFOZSYH \
+  --header 'Accept: application/json' \
+  --header 'Authorization: Token token=u+DB9SMJ7NzGSDzxKUgQ' \
+  --header 'Content-Type: application/json'
+
+
+docker stop $(docker ps | grep nest-cloud-run | awk '{print $1}')
+
+
+
+You have it backwards. You need to do 
+git checkout feature
+  and then   
+git rebase main
+
+
+
+lsb_release -a
+uname -m
+
+
+
+
+curl --request POST \
+  --url http://localhost:3000/cats \
+  --header 'Accept: application/json' \
+  --header 'Content-Type: application/json' \
+  --data '{
+  "name": "bart",
+  "age": "29",
+  "breed": "dog"
+}'
+
+
+for i in `find . -name '*tf'`; do sed -i 's/app-demo-3-tier-23nov/app-demo-nope/g' filename; done
+
+for i in `find . -name '*tf'`; do sed -i 's|git@github.com:Interview2023November/terraform-aws-modules-general.git|../../../../..|g' $i; done
+
+
+
+
+
+
+
+docker-compose up mongo
+
+mongosh "mongodb://localhost" --apiVersion 1 --username root
+
+export ENV="development"
+
+export MONGO_URI="mongodb://root:example@localhost"
+
+export USE_MONGO="true"
+
+
+
+
+aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin nope.dkr.ecr.us-east-2.amazonaws.com
+
+docker build . -t nope-test-service:test1
+
+docker tag nope-test-service:test1 nope.dkr.ecr.us-east-2.amazonaws.com/ex-ksexhfbm-nope-test-service:test1
+
+
+while [ true ]; do sleep 1; for i in $(kubectl get po | grep test | awk {'print $1'}); do kubectl delete po $i --grace-period 0 --force; done; done
+
+
+cat << EOF | kubectl apply -f -
+apiVersion: v1
+kind: Pod
+metadata:
+  name: stress-test
+spec:
+  containers:
+  - name: stress-test
+    image: polinux/stress
+    resources:
+      requests:
+        memory: "100Mi"
+      limits:
+        memory: "200Mi"
+    command: ["sleep"]
+    args: ["3600"]
+EOF
+
+kubectl get --raw /apis/metrics.k8s.io/v1beta1/namespaces/default/pods/stress-test | jq
+
+
+
+
+from https://stackoverflow.com/questions/63241009/aws-sts-assume-role-in-one-command
+
+export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" \
+$(aws sts assume-role \
+--role-arn arn:aws:iam::123456789012:role/MyAssumedRole \
+--role-session-name MySessionName \
+--query "Credentials.[AccessKeyId,SecretAccessKey,SessionToken]" \
+--output text))
+
+export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" \
+$(aws sts assume-role \
+--role-arn arn:aws:iam::nope:role/ex-egyhr2gb-example-cdn_access_role \
+--role-session-name MySessionName \
+--query "Credentials.[AccessKeyId,SecretAccessKey,SessionToken]" \
+--output text))
+
+unset AWS_ACCESS_KEY_ID; unset AWS_SECRET_ACCESS_KEY; unset AWS_SESSION_TOKEN
+
+aws sts assume-role --role-arn arn:aws:iam::nope:role/ex-egyhr2gb-example-cdn_access_role --role-session-name test
+
+
+
+aws s3api put-object --bucket cdn-ex-egyhr2gb-example-cdn20240820165449487700000001 --key dir-2/blah --body main.tf
+
+
+
+
+
+export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" \
+$(aws sts assume-role \
+--role-arn arn:aws:iam::nope:role/cdn-ex-egyhr2gb-example-assumer \
+--role-session-name MySessionName \
+--query "Credentials.[AccessKeyId,SecretAccessKey,SessionToken]" \
+--output text))
+
+
+export TF_VAR_pagerduty_team_name="Central Platform - nope"
+export TF_VAR_pagerduty_user_email="jordan.edsall@nope.com"
+
+
+export TF_VAR_pagerduty_escalation_policy_name="[Central Platform - nope] General Escalation Policy"
+
+
+  #name = "[Central Platform - nope] General Escalation Policy"
+  name = var.pagerduty_escalation_policy_name
+
+
+kubectl patch deployment ex-gzgjxh9d-example-service --patch '{"spec": {"template": {"spec": {"containers": [{"name": "ex-gzgjxh9d-example-service","command": ["stress"],"args": ["--vm", "1", "--vm-bytes", "250M", "--vm-hang", "1"]}]}}}}'
+
+kubectl patch deployment ex-gzgjxh9d-example-service --patch '{"spec": {"template": {"spec": {"containers": [{"name": "ex-gzgjxh9d-example-service","command": ["sleep"],"args": ["360000000"]}]}}}}'
+
+
+
+# Create a random 16 character string
+tr -dc A-Za-z0-9 </dev/urandom | head -c 16; echo
+
+kubectl patch deployment ex-skccvblz-example-service --patch '{"spec": {"template": {"spec": {"containers": [{"name": "ex-skccvblz-example-service","command": ["stress"],"args": ["--vm", "1", "--vm-bytes", "250M", "--vm-hang", "1"]}]}}}}'
+
+kubectl patch deployment ex-skccvblz-example-service --patch '{"spec": {"template": {"spec": {"containers": [{"name": "ex-skccvblz-example-service","command": ["sleep"],"args": ["360000000"]}]}}}}'
+
+
+# Latter merge argument wins
+output "which_map" {
+  value = merge(
+    {a = "a", b = "a"},
+    {a = "b", b = "b"}
+    )
+}
+  + which_map = {
+      + a = "b"
+      + b = "b"
+    }
+
+
+
+export TF_VAR_pagerduty_team_name="Platform Infrastructure"
+
+
+
+
+rm -rf `find . -name '.terraform'`; rm -rf `find . -name '.terraform.lock*'`; rm -rf `find . -name '.terragrunt-cache'`;
+
+
+
+date -d @1587488538
+
+echo $(($(date +%s) * 1000))
+
+aws logs put-log-events --region us-east-2 --log-group-name illustrative-logging --log-stream-name demo --log-events "timestamp=$(($(date +%s) * 1000)),message=hello - again!"
+
+aws logs get-log-events --region us-east-2 --log-group-name illustrative-logging --log-stream-name demo --start-time $(($(date +%s) * 1000 - 30000))
+
+
+
+External DNS exercise:
+- Used resources from https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.7.2/docs/examples/2048/2048_full.yaml then modified to add annotation from https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/aws-load-balancer-controller.md 
+
+
+
+aws ecs update-service --cluster atlantis --service atlantis --force-new-deployment --enable-execute-command
+
+aws ecs execute-command --cluster atlantis \
+    --task 55246907d6fa48d19433ad2cc02dd7fd \
+    --container atlantis \
+    --interactive \
+    --command "/bin/bash"
+
+apk add --update --no-cache python3 && ln -sf python3 /usr/bin/python
+
+apk add --no-cache aws-cli
+
+apk add jq
+
+
+--terragrunt-exclude-dir
+
+
+
+
+
+--terragrunt-ignore-external-dependencies
+
+
+
+
+
+
+
+<details>
+  <summary>Changes for `/workspaces/plat-terraform-ansible/terragrunt/nope-prod/us-east-2/admin/services/ecs`: </summary>
+
+```
+
+```
+</details>
+
+

@@ -747,15 +747,7 @@ apk add jq
 --terragrunt-exclude-dir
 
 
-
-
-
 --terragrunt-ignore-external-dependencies
-
-
-
-
-
 
 
 <details>
@@ -767,3 +759,2961 @@ apk add jq
 </details>
 
 
+terragrunt run-all $TG_COMMAND \
+    --terragrunt-ignore-external-dependencies \
+    --terragrunt-strict-include \
+    --terragrunt-include-dir /workspaces/plat-terraform-ansible/alb \
+    --terragrunt-include-dir /workspaces/plat-terraform-ansible/alb
+
+
+---
+
+curl --header "Content-Type: application/json" \
+
+  --request POST \
+
+  --data '{"name":"xyz"}' \
+
+  http://localhost:7071/api/HttpTrigger1
+
+ 
+
+az account set --subscription nope
+
+ 
+
+ 
+
+url -v --header "Content-Type: application/json" \
+
+  --data '{"name":"xyz"}' \
+
+  https://nopefunc.azurewebsites.net/api/httptrigger1
+
+ 
+
+docker run --net=host -it ngrok/ngrok:latest http 8081
+
+ 
+
+docker run -p 8081:80 nginx
+
+ 
+
+ 
+
+Let's do some azure Atlantis testing stuff!
+
+ 
+
+ATLANTIS_LOCATION=eastus
+
+ATLANTIS_RG_NAME=jedsall-atlantis-precheck
+
+ATLANTIS_STORAGE_NAME=jedsallatlprecheckstore
+
+ATLANTIS_STORAGE_STATE_CONTAINER_NAME=jedsallatlstate
+
+ATLANTIS_CONTAINER_DNS_NAME=notsurejedsallatl
+
+ATLANTIS_CONTAINER_GROUP_NAME=jedsallatlprecheckcontgroup
+
+GITHUB_WEBHOOK_SECRET=ghjk1234thur
+
+az group create --location $ATLANTIS_LOCATION --name $ATLANTIS_RG_NAME --tags atlantis --tags scratch
+
+ 
+
+az storage account create \
+
+    --name $ATLANTIS_STORAGE_NAME \
+
+    --resource-group $ATLANTIS_RG_NAME \
+
+    --location $ATLANTIS_LOCATION \
+
+    --sku Standard_LRS \
+
+    --https-only true \
+
+    --kind StorageV2 \
+
+    --access-tier Hot
+
+ 
+
+STORAGE_KEY=$(az storage account keys list \
+
+    --account-name $ATLANTIS_STORAGE_NAME \
+
+    --query "[0].value" -o tsv | tr -d '"')
+
+ 
+
+az storage container create \
+
+    --name $ATLANTIS_STORAGE_STATE_CONTAINER_NAME \
+
+    --account-name $ATLANTIS_STORAGE_NAME \
+
+    --account-key $STORAGE_KEY
+
+ 
+
+openssl req \
+
+    -new \
+
+    -newkey rsa:4096 \
+
+    -x509 \
+
+    -subj "/C=US/ST=Denial/L=Anytown/O=Dis/CN=$ATLANTIS_CONTAINER_DNS_NAME.$ATLANTIS_LOCATION.azurecontainer.io" \
+
+    -sha256 \
+
+    -days 365 \
+
+    -nodes \
+
+    -out atlantis.crt \
+
+    -keyout atlantis.key
+
+ 
+
+az storage share create \
+
+    --name "atlantis-cert-share" \
+
+    --account-name $ATLANTIS_STORAGE_NAME \
+
+    --account-key $STORAGE_KEY
+
+ 
+
+az storage file upload \
+
+    --share-name "atlantis-cert-share" \
+
+    --source ./atlantis.crt \
+
+    --account-name $ATLANTIS_STORAGE_NAME \
+
+    --account-key $STORAGE_KEY
+
+ 
+
+az storage file upload \
+
+    --share-name "atlantis-cert-share" \
+
+    --source ./atlantis.key \
+
+    --account-name $ATLANTIS_STORAGE_NAME \
+
+    --account-key $STORAGE_KEY
+
+ 
+
+SUB_ID=$(az account show --query "id" -o tsv | tr -d '"')
+
+ 
+
+az container create \
+
+    --name $ATLANTIS_CONTAINER_GROUP_NAME \
+
+    --resource-group $ATLANTIS_RG_NAME \
+
+    --location $ATLANTIS_LOCATION \
+
+    --assign-identity \
+
+    --scope /subscriptions/$SUB_ID \
+
+    --azure-file-volume-account-name $ATLANTIS_STORAGE_NAME \
+
+    --azure-file-volume-account-key $STORAGE_KEY \
+
+    --azure-file-volume-share-name "atlantis-cert-share" \
+
+    --azure-file-volume-mount-path /mnt/atlantis-certs \
+
+    --image nginx \
+
+    --os-type Linux \
+
+    --restart-policy OnFailure \
+
+    --cpu 1 \
+
+    --memory 2 \
+
+    --ports 80 \
+
+    --dns-name-label $ATLANTIS_CONTAINER_DNS_NAME \
+
+    --environment-variables \
+
+        ARM_USE_MSI=true \
+
+        ARM_SKIP_CREDENTIALS_VALIDATION=$SKIP_CREDENTIALS_VALIDATION \
+
+        ARM_SKIP_PROVIDER_REGISTRATION=$SKIP_PROVIDER_REGISTRATION \
+
+        ARM_ACCESS_KEY=$STORAGE_KEY \
+
+        ARM_SUBSCRIPTION_ID=$SUB_ID
+
+ 
+
+gh api /repos/nope/temprepo/hooks \
+
+   --input - <<< '{
+
+  "name": "web",
+
+  "active": true,
+
+  "events": [
+
+    "watch"
+
+  ],
+
+  "config": {
+
+    "url": https://some_webhook.ngrok.io/webhook,
+
+    "content_type": "json",
+
+    "secret": "12df56hj78kl"
+
+  }
+
+}'
+
+ 
+
+gh api \
+
+  -H "Accept: application/vnd.github+json" \
+
+  /repos/nope/temprepo/hooks/HOOK_ID/config
+
+ 
+
+gh auth refresh -h github.com -s admin:repo_hook
+
+ 
+
+openssl s_client -showcerts -connect www.domain.com:443
+
+ 
+
+https://atl-aci-label.eastus.azurecontainer.io/events
+
+ 
+
+git for-each-ref --sort=authordate --format '%(refname) %(authordate)' refs/tags
+
+git for-each-ref --sort=taggerdate --format '%(refname) %(taggerdate)' refs/tags
+
+ 
+
+ 
+
+SCRIPTPATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
+
+ 
+
+ACCOUNT_KEY=$(az storage account keys list --resource-group $RESOURCE_GROUP_NAME --account-name $STORAGE_ACCOUNT_NAME --query '[0].value' -o tsv)
+
+export ARM_ACCESS_KEY=$ACCOUNT_KEY
+
+ 
+
+ 
+
+ 
+
+#commands = ["atlantis server --gh-user=$GITHUB_USER --gh-token=$GITHUB_TOKEN --gh-webhook-secret=12345abcde --repo-whitelist=github.com/nope/temprepo --ssl-cert-file=/mnt/atlantis-certs/atlantis.crt --ssl-key-file=/mnt/atlantis-certs/atlantis.key"]
+
+ 
+
+#    commands = [
+
+#      "atlantis",
+
+#      "server",
+
+#      "--gh-user",
+
+#      "\"fred\"",
+
+#      "--gh-token",
+
+#      "\"ghp_8tZcgggg4V3brG5J\"",
+
+#      "--gh-webhook-secret",
+
+#      "\"1234abcd5678er\"",
+
+#      "--repo-whitelist",
+
+#      "\"github.com/nope/*\"",
+
+#      "--ssl-cert-file",
+
+#      "\"/mnt/atlantis-certs/atlantis.crt\"",
+
+#      "--ssl-key-file",
+
+#      "\"/mnt/atlantis-certs/atlantis.key\""
+
+#    ]
+
+ 
+
+openssl x509 -in certificate.crt -text -noout
+
+ 
+
+ 
+
+az keyvault create --name "jeds-az-atl-env-kv" --resource-group "jedsall-azure-atlantis-env-test" --location "EastUS"
+
+ 
+
+az keyvault secret set --vault-name "jeds-az-atl-env-kv" --name "ExamplePassword" --value "hVFkk965BuUv"
+
+ 
+
+ 
+
+az keyvault secret show --name "ExamplePassword" --vault-name "jeds-az-atl-env-kv" --query "value"
+
+ 
+
+ 
+
+cat << EOF > backend.conf
+
+resource_group_name  = "jedsall-azure-atlantis-env-tes2"
+
+storage_account_name = "jedsallatlstorageacct2"
+
+container_name       = "jedsallatlstoragecont2"
+
+key                  = "terraform.tfstate"
+
+EOF
+
+cat << EOF > backend.conf
+
+resource_group_name  = "jedsall-azure-atlantis-env-tes3"
+
+storage_account_name = "jedsallatlstorageacct3"
+
+container_name       = "jedsallatlstoragecont3"
+
+key                  = "terraform.tfstate"
+
+EOF
+
+ 
+
+git reset --soft HEAD~1
+
+ 
+
+ 
+
+Fri 18 Nov 2022 09:51:46 AST
+
+ 
+
+ 
+
+openssl s_client -connect {HOSTNAME}:{PORT} -showcerts
+
+ 
+
+openssl s_client -showcerts -connect server.edu:443 </dev/null 2>/dev/null|openssl x509 -outform PEM >mycertfile.pem
+
+ 
+
+ 
+
+wget https:/server.edu:443/somepage --ca-certificate=mycertfile.pem
+
+ 
+
+az keyvault purge --name keyvaultname
+
+ 
+
+ 
+
+docker run -it --rm -p 8080:8080 \
+  -v ${PWD}:/data \
+  -v ~/.grip:/.grip \
+  mbentley/grip \
+  --context=username/repo README.md 0.0.0.0:8080
+
+ 
+
+touch hello.file
+
+docker cp hello.file 2c3243e0c6c9:/hello.file
+
+ 
+
+az keyvault secret show --vault-name je-sandbox-eus-adun8-kk --name akfb64 --query "value"
+
+ 
+
+vim -- d$ to delete until end of line
+
+ 
+
+ 
+
+--------------------- Atlantis payload ---------------------
+
+terraform {
+
+  required_providers {
+
+    azurerm = {
+
+      version = ">= 3.29.0"
+
+    }
+
+  }
+
+  backend "azurerm" {  
+
+    resource_group_name  = "je-sandbox-eus-atlenv"
+
+    storage_account_name = "jesandboxeusatlenvsa"
+
+    container_name       = "jesandboxeusatlenvsc"
+
+    key                  = "terraform2.tfstate"
+
+  }
+
+}
+
+ 
+
+provider "azurerm" {
+
+  features {}
+
+}
+
+ 
+
+resource "azurerm_resource_group" "this" {
+
+  name            = "je-sandbox-eus-atl-created"
+
+  location        = "eastus"
+
+}
+
+------------------------------------------------------------
+
+ 
+
+ 
+
+Fri  2 Dec 2022 09:10:06 AST
+
+ 
+
+aws appmesh update-route \
+
+--mesh-name dj-app \
+
+--cli-input-json '{
+
+                "routeName": "rock-route",
+
+                "spec": {
+
+                                "httpRoute": {
+
+                                                "action": {
+
+                                                                "weightedTargets": [{
+
+                                                                                                "virtualNode": "rock-v1_meshed",
+
+                                                                                                "weight": 50
+
+                                                                                },
+
+                                                                                {
+
+                                                                                                "virtualNode": "rock-v2_meshed",
+
+                                                                                                "weight": 50
+
+                                                                                }
+
+                                                                ]
+
+                                                },
+
+                                                "match": {
+
+                                                                "prefix": "/"
+
+                                                }
+
+                                }
+
+                },
+
+                "virtualRouterName": "rock-router_meshed"
+
+}'
+
+ 
+
+ 
+
+ 
+
+docker ps --no-trunc
+
+docker volume ls
+
+docker volume inspect primary_devcontainer_workspaces
+
+docker inspect 502e4a377216
+
+ 
+
+az account set --subscription nope
+
+ 
+
+Not IP Match
+
+66.69.88.23
+
+24.138.33.96
+
+ 
+
+#rnd_cloud_governance
+
+ 
+
+ 
+
+ 
+
+git branch -a
+
+git branch -r
+
+git checkout -b terraform origin/terraform
+
+git branch -d terraform
+
+git branch -D terraform
+
+git checkout -b main origin/main
+
+git branch -D terraform
+
+git reset --hard HEAD
+
+ 
+
+git reset --hard HEAD
+
+-- does not help go back any commits
+
+ 
+
+git commit -a -m "Saving my work, just in case"
+
+git branch my-saved-work
+
+ 
+
+git fetch origin
+
+git reset --hard origin/master
+
+ 
+
+jordan.edsall@C02DJ1GEMD6T SATIaC % git clean -n -d -f
+
+Would remove TerragruntExample/
+
+jordan.edsall@C02DJ1GEMD6T SATIaC % git clean -d -f
+
+Removing TerragruntExample/
+
+ 
+
+ 
+
+ 
+
+python3 -m venv .venv
+
+sudo apt install -y python3.8-venv
+
+python3 -m venv .venv
+
+source .venv/bin/activate
+
+ 
+
+pip3 install -r requirements.txt
+
+ 
+
+curl -d "param1=value1&param2=value2" -X POST http://localhost:7071/api/submit-email
+
+ 
+
+ 
+
+export TF_LOG_CORE=TRACE
+
+export TF_LOG_PROVIDER=TRACE
+
+unset TF_LOG_CORE
+
+ 
+
+ 
+
+ 
+
+Fri  6 Jan 2023 09:51:26 AST
+
+ 
+
+ 
+
+git restore --staged orgs/nope/azure-management-infrastructure-live/main.tf
+
+git restore --staged orgs/nope/terraform-azure-modules/main.tf
+
+ 
+
+az group list \
+
+    --query "[?tags.legacy-purpose && tags.legacy-purpose != 'Engineering']" -o table
+
+FAILS - need to quote tag key due to hyphen
+
+az group list \
+
+    --query '[?tags."legacy-purpose" && tags."legacy-purpose" != 'Engineering']' -o table
+
+ 
+
+ 
+
+docker-compose up -d
+
+Starting primary_devcontainer_nope_nope_1 ... done
+
+pwd
+
+/Users/jordan.edsall/workspace/aws_nope/nope-build/.devcontainer
+
+ 
+
+az group list \
+
+    --query '[?tags."legacy-purpose" == null]' -o table
+
+ 
+
+az graph query -q "ResourceContainers | project name, type, tags | where type == 'microsoft.resources/subscriptions/resourcegroups' | where tags '!contains' 'Cost Center' | project name"
+
+(fails in bash)
+
+ 
+
+az graph query -q 'ResourceContainers | project name, type, tags | where type == "microsoft.resources/subscriptions/resourcegroups" | where tags !contains "Cost Center" | project name'
+
+ 
+
+az graph query -q 'Resources | project name, type, tags | where tags !contains "legacy-purpose" | project name' --subscriptions nope
+
+ 
+
+az graph query -q 'Resources | project name, type, tags | where tags !contains "legacy-purpose" | project name' --subscriptions nope nope
+
+ 
+
+git branch --set-upstream-to origin/main
+
+jordan.edsall@C02DJ1GEMD6T github-config % git pull
+
+hint: You have divergent branches and need to specify how to reconcile them.
+
+hint: You can do so by running one of the following commands sometime before
+
+hint: your next pull:
+
+hint:
+
+hint:   git config pull.rebase false  # merge
+
+hint:   git config pull.rebase true   # rebase
+
+hint:   git config pull.ff only       # fast-forward only
+
+hint:
+
+hint: You can replace "git config" with "git config --global" to set a default
+
+hint: preference for all repositories. You can also pass --rebase, --no-rebase,
+
+hint: or --ff-only on the command line to override the configured default per
+
+hint: invocation.
+
+ 
+
+fixed by:
+
+git pull --rebase
+
+ 
+
+1106  git restore --stages mgmt
+
+1107  git restore --staged mgmt
+
+1108  git status
+
+1109  git commit -m "Adding gitignore to ensure no accidental states get committed."
+
+1110  git status
+
+1111  git push -f -u origin HEAD:terraform-before-main
+
+1112  git checkout -b terraform-before-main origin/terraform-before-main
+
+1113  git status
+
+1114  git add --all
+
+1115  git status
+
+1116  git restore --staged mgmt
+
+1117  git status
+
+1118  git add --all
+
+1119  git status
+
+1120  git restore --staged mgmt
+
+1121  git status
+
+ 
+
+ 
+
+ 
+
+jordan.edsall@C02DJ1GEMD6T FakenopeRepo % git status
+
+On branch main
+
+Your branch and 'origin/main' have diverged,
+
+and have 10 and 2 different commits each, respectively.
+
+  (use "git pull" to merge the remote branch into yours)
+
+ 
+
+nothing to commit, working tree clean
+
+jordan.edsall@C02DJ1GEMD6T FakenopeRepo % git pull --rebase
+
+remote: Enumerating objects: 8, done.
+
+remote: Counting objects: 100% (8/8), done.
+
+remote: Compressing objects: 100% (4/4), done.
+
+remote: Total 5 (delta 2), reused 0 (delta 0), pack-reused 0
+
+Unpacking objects: 100% (5/5), 1.30 KiB | 221.00 KiB/s, done.
+
+From github.com:FakenopeOrg/FakenopeRepo
+
+   7f7e7e8..69ea220  go-deployment-center -> origin/go-deployment-center
+
+Successfully rebased and updated refs/heads/main.
+
+jordan.edsall@C02DJ1GEMD6T FakenopeRepo % git status
+
+On branch main
+
+Your branch is ahead of 'origin/main' by 10 commits.
+
+  (use "git push" to publish your local commits)
+
+ 
+
+nothing to commit, working tree clean
+
+jordan.edsall@C02DJ1GEMD6T FakenopeRepo % git status
+
+On branch main
+
+Your branch is ahead of 'origin/main' by 10 commits.
+
+  (use "git push" to publish your local commits)
+
+ 
+
+nothing to commit, working tree clean
+
+jordan.edsall@C02DJ1GEMD6T FakenopeRepo % git reset --hard
+
+HEAD is now at a5a8323 Deploy to alternate slot -- testfromnewworkflow. This will use a manual publishprofile instead of deployment center. New repo with no deployment center, just downloading publish profile.
+
+jordan.edsall@C02DJ1GEMD6T FakenopeRepo % git status
+
+On branch main
+
+Your branch is ahead of 'origin/main' by 10 commits.
+
+  (use "git push" to publish your local commits)
+
+ 
+
+nothing to commit, working tree clean
+
+jordan.edsall@C02DJ1GEMD6T FakenopeRepo % git reset --hard HEAD~10
+
+ 
+
+git checkout -b test-my-proxy
+
+ 
+
+git push --set-upstream origin test-my-proxy
+
+ 
+
+psql -h test-psqlserver.postgres.database.azure.com -p 5432 -d default -U psqladmin
+
+(wrong)
+
+ 
+
+psql -v sslmode=true -h test-psqlserver.postgres.database.azure.com -p 5432 -d default -U psqladmin@test-psqlserver
+
+ 
+
+ 
+
+Tue  7 Feb 2023 11:20:36 AST
+
+ 
+
+git branch -v -a
+
+ 
+
+git restore --staged .
+
+ 
+
+curl -H "Host: example.com" http://localhost/
+
+ 
+
+# Does not work if you have this existing local branch
+
+git branch --track terraform-before-main origin/terraform-before-main
+
+git branch -u terraform-before-main
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+FULLY_QUALIFIED_NAMESPACE = "expl-sb-eusb-sbusex-sbn.servicebus.windows.net"
+
+QUEUE_NAME = "test"
+
+ 
+
+credential = DefaultAzureCredential()
+
+ 
+
+ 
+
+ 
+
+ 
+
+async def run():
+
+    # create a Service Bus client using the credential
+
+    async with ServiceBusClient(
+
+        fully_qualified_namespace=FULLY_QUALIFIED_NAMESPACE,
+
+        credential=credential,
+
+        logging_enable=True) as servicebus_client:
+
+        # get a Queue Sender object to send messages to the queue
+
+        sender = servicebus_client.get_queue_sender(queue_name=QUEUE_NAME)
+
+        async with sender:
+
+            # send one message
+
+            await send_single_message(sender)
+
+ 
+
+        # Close credential when no longer needed.
+
+        await credential.close()
+
+ 
+
+ 
+
+ 
+
+asyncio.run(run())
+
+print("Done sending messages")
+
+print("-----------------------")
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+# Install Azure CLI
+
+ 
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+ 
+
+ 
+
+curl -sL https://aka.ms/InstallAzureCLIDeb | bash
+
+ 
+
+curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | tee /etc/apt/trusted.gpg.d/microsoft.asc.gpg > /dev/null
+
+ 
+
+AZ_REPO=$(lsb_release -cs) && echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | tee /etc/apt/sources.list.d/azure-cli.list
+
+ 
+
+apt-get update && apt-get install -y --no-install-recommends azure-cli
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+pip install azure-servicebus
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+import asyncio
+
+from azure.servicebus.aio import ServiceBusClient
+
+from azure.servicebus import ServiceBusMessage
+
+ 
+
+QUEUE_NAME = "test"
+
+NAMESPACE_CONNECTION_STR = "Endpoint=sb://expl-sb-eusb-sbusex-sbn.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=abcd="
+
+ 
+
+async def send_single_message(sender):
+
+    # Create a Service Bus message and send it to the queue
+
+    message = ServiceBusMessage("Single Message")
+
+    await sender.send_messages(message)
+
+    print("Sent a single message")
+
+ 
+
+async def run():
+
+    # create a Service Bus client using the connection string
+
+    async with ServiceBusClient.from_connection_string(
+
+        conn_str=NAMESPACE_CONNECTION_STR,
+
+        logging_enable=True) as servicebus_client:
+
+        # Get a Queue Sender object to send messages to the queue
+
+        sender = servicebus_client.get_queue_sender(queue_name=QUEUE_NAME)
+
+        async with sender:
+
+            # Send one message
+
+            await send_single_message(sender)
+
+ 
+
+asyncio.run(run())
+
+print("Done sending messages")
+
+print("-----------------------")
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+docker run -it python:3.11 /bin/bash
+
+ 
+
+ 
+
+ 
+
+curl -sL https://aka.ms/InstallAzureCLIDeb | bash
+
+ 
+
+curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | tee /etc/apt/trusted.gpg.d/microsoft.asc.gpg > /dev/null
+
+ 
+
+AZ_REPO=$(lsb_release -cs) && echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | tee /etc/apt/sources.list.d/azure-cli.list
+
+ 
+
+apt-get update && apt-get install -y --no-install-recommends azure-cli
+
+ 
+
+ 
+
+ 
+
+pip install azure-servicebus
+
+ 
+
+ 
+
+import asyncio
+
+from azure.servicebus.aio import ServiceBusClient
+
+ 
+
+QUEUE_NAME = "test"
+
+NAMESPACE_CONNECTION_STR = "Endpoint=sb://expl-sb-eusb-sbusex-sbn.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=abcd+KeRx55m9K2mqefM="
+
+ 
+
+async def run():
+
+    # create a Service Bus client using the connection string
+
+    async with ServiceBusClient.from_connection_string(
+
+        conn_str=NAMESPACE_CONNECTION_STR,
+
+        logging_enable=True) as servicebus_client:
+
+ 
+
+        async with servicebus_client:
+
+            # get the Queue Receiver object for the queue
+
+            receiver = servicebus_client.get_queue_receiver(queue_name=QUEUE_NAME)
+
+            async with receiver:
+
+                received_msgs = await receiver.receive_messages(max_wait_time=5, max_message_count=20)
+
+                for msg in received_msgs:
+
+                    print("Received: " + str(msg))
+
+                    # complete the message so that the message is removed from the queue
+
+                    await receiver.complete_message(msg)
+
+ 
+
+asyncio.run(run())
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+curl -sL https://aka.ms/InstallAzureCLIDeb | bash
+
+ 
+
+curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | tee /etc/apt/trusted.gpg.d/microsoft.asc.gpg > /dev/null
+
+ 
+
+AZ_REPO=$(lsb_release -cs) && echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | tee /etc/apt/sources.list.d/azure-cli.list
+
+ 
+
+apt-get update && sudo apt-get install -y --no-install-recommends azure-cli
+
+ 
+
+ 
+
+sudo curl -sL https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip -o /tmp/terraform_${TERRAFORM_VERSION}_linux_amd64.zip && \
+
+    sudo unzip /tmp/terraform_${TERRAFORM_VERSION}_linux_amd64.zip -d /usr/bin && \
+
+    sudo rm -rf /tmp/* && \
+
+    sudo rm -rf /var/cache/apk/* && \
+
+    sudo rm -rf /var/tmp/*
+
+ 
+
+ 
+
+az account set --subscription nope
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+Tue  4 Apr 2023 08:17:00 ADT
+
+ 
+
+ 
+
+git rebase terraform-before-main main
+
+ 
+
+# Rename branch
+
+git branch -m terraform-before-main-rebased
+
+ 
+
+apt install -y netcat
+
+netcat nope-dev-eusb-bar-ca-spam.calmwave-bbf4ddc1.eastus.azurecontainerapps.io 783
+
+ 
+
+ 
+
+Log query examples:
+
+ 
+
+ContainerAppConsoleLogs_CL
+
+| where RevisionName_s == "nope-dev-eusb-bar-ca-phbrl-djg--zm9mg85"
+
+| where TimeGenerated > ago(20m)
+
+ 
+
+ContainerAppConsoleLogs_CL
+
+| where RevisionName_s == "nope-dev-eusb-bar-ca-phbrl-djg--p7xb195"
+
+| where TimeGenerated > ago(20m)
+
+ 
+
+ 
+
+psql -h host -d database -U user -W
+
+ 
+
+ 
+
+git branch --set-upstream-to=origin/debug/proxy-to-gunicorn debug/proxy-to-gunicorn
+
+ 
+
+git branch --set-upstream-to=origin/main main
+
+ 
+
+ 
+
+ 
+
+for i in `find . -name '*tf'`; do sed -i '' 's/v0.2.10/v0.2.13/g' $i; done
+
+ 
+
+grep -FR terraform-azure-modules | grep -F ref=v0.
+
+ 
+
+ 
+
+ 
+
+ 
+
+# discard a commit from the tip... (gets back from Your branch is ahead of 'origin/main' by 2 commits.)
+
+git reset --hard HEAD^
+
+# One commit ^
+
+git reset --hard HEAD~2
+
+# Two ^
+
+ 
+
+ 
+
+for i in `find . -name '*tf'`; do sed -i '' 's/stridepoint_directory_tenant_id/msa_tenant_id/g' $i; done
+
+ 
+
+ 
+
+git show HEAD~1
+
+ 
+
+(diff in your current commits)
+
+git diff HEAD^ HEAD
+
+ 
+
+ 
+
+ 
+
+# This DOES work after all - cancel that --> oops - this rebases main onto feat branch
+
+git rebase main <feat branch>
+
+ 
+
+# This rebases feat branch onto main
+
+git rebase <feat> main
+
+ 
+
+(or should those be reversed..?)
+
+ 
+
+ 
+
+az role assignment list --scope /subscriptions/nope/resourceGroups/nope-tst-eusb-bar-rg/providers/Microsoft.KeyVault/vaults/nope-tst-eusb-bar-kv
+
+ 
+
+ 
+
+ 
+
+# Rename current branch
+
+git branch -m <newname>
+
+ 
+
+ 
+
+git branch --unset-upstream
+
+ 
+
+ 
+
+ 
+
+Fri 21 Apr 2023 09:45:46 ADT
+
+ 
+
+ 
+
+ 
+
+ 
+
+az ad sp create-for-rbac --name trysecretapi
+
+  "appId": "1df61e40-ec17-4186-b1a4-c22333e4a6a2"
+
+"password": "Qfa8Q~.abcd"
+
+ 
+
+ 
+
+# Azure REST API examples
+
+curl -X POST -d 'grant_type=client_credentials&client_id=1df61e40-ec17-4186-b1a4-c22333e4a6a2&client_secret=abcd-abcd&resource=https%3A%2F%2Fmanagement.azure.com%2F' https://login.microsoftonline.com/nope/oauth2/token
+
+ 
+
+curl -X GET -H "Authorization: Bearer $BEARER" -H "Content-Type: application/json" https://management.azure.com/subscriptions/nope/providers/Microsoft.Web/sites?api-version=2016-08-01
+
+ 
+
+curl -X GET -H "Authorization: Bearer $BEARER" -H "Content-Type: application/json" https://management.azure.com/subscriptions/nope/resourceGroups/expl-sb-eus-azsmj-rg/providers/Microsoft.KeyVault/vaults/expl-sb-eus-azsmj-dkv/secrets/direct-literal/versions?api-version=2023-02-01
+
+ 
+
+ 
+
+ 
+
+ 
+
+# Azure Vault REST
+
+curl -X POST -d 'grant_type=client_credentials&client_id=1df61e40-ec17-4186-b1a4-c22333e4a6a2&client_secret=MYGHdj-BFsX5gjDsZVyu1Il0ev4OGPcfG&resource=https%3A%2F%2Fvault.azure.net' https://login.microsoftonline.com/nope/oauth2/token
+
+ 
+
+curl -X GET -H "Authorization: Bearer $SBEARER" -H "Content-Type: application/json" https://expl-sb-eus-azsmj-dkv.vault.azure.net/secrets/direct-literal/versions?api-version=7.3
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+for i in `find . -name '*tf'`; do sed -i '' 's/v0.2.10/v0.2.13/g' $i; done
+
+ 
+
+grep -FR terraform-azure-modules | grep -F ref=v0.
+
+ 
+
+ 
+
+# checkout an existing branch which is now behind main
+
+#######
+
+## This did not work
+
+#######
+
+git checkout -b nope-205525-remove-nope_KEYVAULT_NAME-config origin/nope-205525-remove-nope_KEYVAULT_NAME-config
+
+ 
+
+jordan.edsall@C02DJ1GEMD6T live % git rebase nope-205525-remove-nope_KEYVAULT_NAME-config main
+
+Successfully rebased and updated refs/heads/main.
+
+jordan.edsall@C02DJ1GEMD6T live % git status
+
+On branch main
+
+Your branch and 'origin/main' have diverged,
+
+and have 3 and 2 different commits each, respectively.
+
+  (use "git pull" to merge the remote branch into yours)
+
+ 
+
+nothing to commit, working tree clean
+
+jordan.edsall@C02DJ1GEMD6T live % git pull --rebase
+
+warning: skipped previously applied commit 8c4b81a
+
+warning: skipped previously applied commit 75df2fd
+
+hint: use --reapply-cherry-picks to include skipped commits
+
+hint: Disable this message with "git config advice.skippedCherryPicks false"
+
+Successfully rebased and updated refs/heads/main.
+
+jordan.edsall@C02DJ1GEMD6T live % git status
+
+On branch main
+
+Your branch is ahead of 'origin/main' by 1 commit.
+
+  (use "git push" to publish your local commits)
+
+ 
+
+nothing to commit, working tree clean
+
+ 
+
+jordan.edsall@C02DJ1GEMD6T live % git push origin -u HEAD:nope-205525-remove-nope_KEYVAULT_NAME-config
+
+To github.com:nope/nope-infrastructure-live.git
+
+! [rejected]        HEAD -> nope-205525-remove-nope_KEYVAULT_NAME-config (non-fast-forward)
+
+error: failed to push some refs to 'github.com:nope/nope-infrastructure-live.git'
+
+hint: Updates were rejected because a pushed branch tip is behind its remote
+
+hint: counterpart. Check out this branch and integrate the remote changes
+
+hint: (e.g. 'git pull ...') before pushing again.
+
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+
+jordan.edsall@C02DJ1GEMD6T live % git pull --rebase
+
+Current branch main is up to date.
+
+jordan.edsall@C02DJ1GEMD6T live % git status
+
+On branch main
+
+Your branch is ahead of 'origin/main' by 1 commit.
+
+  (use "git push" to publish your local commits)
+
+ 
+
+nothing to commit, working tree clean
+
+jordan.edsall@C02DJ1GEMD6T live % git checkout nope-205525-remove-nope_KEYVAULT_NAME-config
+
+Switched to branch 'nope-205525-remove-nope_KEYVAULT_NAME-config'
+
+Your branch is up to date with 'origin/nope-205525-remove-nope_KEYVAULT_NAME-config'.
+
+jordan.edsall@C02DJ1GEMD6T live % git status
+
+On branch nope-205525-remove-nope_KEYVAULT_NAME-config
+
+Your branch is up to date with 'origin/nope-205525-remove-nope_KEYVAULT_NAME-config'.
+
+ 
+
+#######
+
+## This did not work -- end
+
+#######
+
+ 
+
+ 
+
+ 
+
+# This worked
+
+git rebase main <feat branch>
+
+ 
+
+ 
+
+ 
+
+ 
+
+Fri 26 May 2023 09:50:15 ADT
+
+ 
+
+ 
+
+ 
+
+git push origin -f -u HEAD:feat/nope-202508-Baseline_on_new_identity_before_ingress_changes
+
+ 
+
+# rename current branch
+
+git branch -m feat/nope-202508-Baseline_on_new_identity_before_ingress_changes
+
+ 
+
+ 
+
+jordan.edsall@C02DJ1GEMD6T nope-infrastructure-live % git tag v0.1.13
+
+jordan.edsall@C02DJ1GEMD6T nope-infrastructure-live % git push --tags
+
+ 
+
+# Oops - wrong tag
+
+jordan.edsall@C02DJ1GEMD6T nope-infrastructure-live % git push --delete origin v0.1.13
+
+To github.com:nope/nope-infrastructure-live.git
+
+- [deleted]         v0.1.13
+
+jordan.edsall@C02DJ1GEMD6T nope-infrastructure-live % git tag v0.1.13
+
+fatal: tag 'v0.1.13' already exists
+
+jordan.edsall@C02DJ1GEMD6T nope-infrastructure-live % git tag --delete v0.1.13
+
+Deleted tag 'v0.1.13' (was 55afeaa)
+
+jordan.edsall@C02DJ1GEMD6T nope-infrastructure-live % git tag v0.1.13
+
+jordan.edsall@C02DJ1GEMD6T nope-infrastructure-live % git push --tags
+
+ 
+
+ 
+
+For nope:
+
+ 
+
+ 
+
+curl -X POST -d '{}' https://dev1-intake-api.nope.com/api/v1/submit-email
+
+(Expect bad request)
+
+ 
+
+ 
+
+for i in `find . -name '*tf'`; do sed -i '' 's/v0.5.10/v0.5.11/g' $i; done
+
+ 
+
+for i in `find . -name '*tf'`; do sed -i '' 's/phishtale/nope/g' $i; done
+
+ 
+
+ 
+
+https://towardsdatascience.com/its-finally-time-to-say-goodbye-to-git-checkout-fe95182c6100
+
+git switch -c <branch>
+
+instead of 'git checkout -b <branch>'
+
+ 
+
+ 
+
+cat */**/*.yaml
+
+ 
+
+workflow to comment on a PR
+
+https://github.com/nope/eva-scannable/blob/main/.github/workflows/release-validate.yaml#L55
+
+ 
+
+docker build -t justatestofazclidnstracker .
+
+docker run -it --rm justatestofazclidnstracker
+
+ 
+
+ 
+
+ 
+
+Fri  9 Jun 2023 09:04:59 ADT
+
+ 
+
+jordan.edsall@C02DJ1GEMD6T ingress % git log -10 --oneline
+
+e84f5f6 (HEAD -> main, origin/main, origin/HEAD) Baseline Client IDs and module versions in Prod. (#125)
+
+41ba4a9 feat: [nope-217872] Update module references for cleanup phase. (#122)
+
+fcbad38 feat: [nope-217872] Update module references for standup phase. (#121)
+
+f28e526 [nope-217872] Teardown phase of ingress upgrade and addition of ingress module in live. (#120)
+
+2a9e4e6 feat: [nope-217872] Update test to new identity baseline before ingress upgrade. (#119)
+
+ac7fd56 (tag: v0.1.16) [nope-202508] Clean up post ingress change (#118)
+
+f9500d5 (tag: v0.1.15) [nope-202508] Reconfigure stack ingress routing (#117)
+
+1948f58 (tag: v0.1.14) [nope-202508] Teardown old ingress (#116)
+
+7ea1759 (tag: v0.1.13) [nope-202508] Baseline on new identity before ingress changes (#115)
+
+55afeaa [nope-212165] Add Capability to Set App GW Backend Timeout. (#114)
+
+ 
+
+jordan.edsall@C02DJ1GEMD6T ingress % git checkout -b feat/prod-barrel-tweaks origin/feat/prod-barrel-tweaks
+
+branch 'feat/prod-barrel-tweaks' set up to track 'origin/feat/prod-barrel-tweaks'.
+
+Switched to a new branch 'feat/prod-barrel-tweaks'
+
+ 
+
+jordan.edsall@C02DJ1GEMD6T ingress % git log -10 --oneline
+
+6695190 (HEAD -> feat/prod-barrel-tweaks, origin/feat/prod-barrel-tweaks) Comment out temp-unused vars.
+
+94e4ae5 Remove remaining unused secrets.
+
+288145f Comment out secret data sources.
+
+fe1a788 Post ingress change Prod tweaks.
+
+41ba4a9 feat: [nope-217872] Update module references for cleanup phase. (#122)
+
+fcbad38 feat: [nope-217872] Update module references for standup phase. (#121)
+
+f28e526 [nope-217872] Teardown phase of ingress upgrade and addition of ingress module in live. (#120)
+
+2a9e4e6 feat: [nope-217872] Update test to new identity baseline before ingress upgrade. (#119)
+
+ac7fd56 (tag: v0.1.16) [nope-202508] Clean up post ingress change (#118)
+
+f9500d5 (tag: v0.1.15) [nope-202508] Reconfigure stack ingress routing (#117)
+
+ 
+
+jordan.edsall@C02DJ1GEMD6T ingress % git rebase main feat/prod-barrel-tweaks
+
+Successfully rebased and updated refs/heads/feat/prod-barrel-tweaks.
+
+ 
+
+jordan.edsall@C02DJ1GEMD6T ingress % git log -10 --oneline
+
+f9fa7e7 (HEAD -> feat/prod-barrel-tweaks) Comment out temp-unused vars.
+
+808c027 Remove remaining unused secrets.
+
+2336ad8 Comment out secret data sources.
+
+9181cca Post ingress change Prod tweaks.
+
+e84f5f6 (origin/main, origin/HEAD, main) Baseline Client IDs and module versions in Prod. (#125)
+
+41ba4a9 feat: [nope-217872] Update module references for cleanup phase. (#122)
+
+fcbad38 feat: [nope-217872] Update module references for standup phase. (#121)
+
+f28e526 [nope-217872] Teardown phase of ingress upgrade and addition of ingress module in live. (#120)
+
+2a9e4e6 feat: [nope-217872] Update test to new identity baseline before ingress upgrade. (#119)
+
+ac7fd56 (tag: v0.1.16) [nope-202508] Clean up post ingress change (#118)
+
+jordan.edsall@C02DJ1GEMD6T ingress %
+
+ 
+
+ 
+
+ 
+
+ 
+
+Fri 21 Jul 2023 09:14:54 ADT
+
+ 
+
+ 
+
+ 
+
+docker run --rm -it mcr.microsoft.com/azure-cli
+
+ 
+
+date -u
+
+ 
+
+Apply complete! Resources: 0 added, 0 changed, 0 destroyed.
+
+ 
+
+Outputs:
+
+ 
+
+blah = [
+
+  {
+
+    "instance_id" = "a"
+
+    "instance_uid" = "map_a_1"
+
+    "volume_label" = "x"
+
+  },
+
+  {
+
+    "instance_id" = "a"
+
+    "instance_uid" = "map_a_1"
+
+    "volume_label" = "y"
+
+  },
+
+  {
+
+    "instance_id" = "a"
+
+    "instance_uid" = "map_a_1"
+
+    "volume_label" = "z"
+
+  },
+
+  {
+
+    "instance_id" = "b"
+
+    "instance_uid" = "map_a_2"
+
+    "volume_label" = "x"
+
+  },
+
+  {
+
+    "instance_id" = "b"
+
+    "instance_uid" = "map_a_2"
+
+    "volume_label" = "y"
+
+  },
+
+  {
+
+    "instance_id" = "b"
+
+    "instance_uid" = "map_a_2"
+
+    "volume_label" = "z"
+
+  },
+
+]
+
+vscode ➜ /tmp $ cat main.tf
+
+locals {
+
+ 
+
+  map_a = {
+
+    map_a_1 = "a"
+
+    map_a_2 = "b"
+
+  }
+
+ 
+
+  list_b = ["x", "y", "z"]
+
+ 
+
+  instances_volumes = flatten([
+
+    for inst_key, inst in local.map_a : [
+
+      for vol_key in local.list_b : {
+
+        instance_uid = inst_key
+
+        instance_id  = inst
+
+        volume_label = vol_key
+
+      }
+
+    ]
+
+  ])
+
+}
+
+ 
+
+output "blah" {
+
+  value = local.instances_volumes
+
+}
+
+ 
+
+ 
+
+# Rename a branch
+
+git branch -m <old_name> <new_name>
+
+ 
+
+# Change upstream
+
+git branch branch_name --set-upstream-to your_new_remote/branch_name
+
+ 
+
+In linting, search for [ERROR]
+
+ 
+
+PEMs to pix
+
+openssl pkcs12 -export -out automated-mailsender.com.pfx -inkey automated-mailsender.com.key -in automated-mailsender.com.crt
+
+ 
+
+export DOMAIN=admin-hinweis.de
+
+vim $DOMAIN.crt
+
+vim $DOMAIN.key
+
+openssl pkcs12 -export -out $DOMAIN.pfx -inkey $DOMAIN.key -in $DOMAIN.crt
+
+ 
+
+# Generate password
+
+tr -dc A-Za-z0-9 </dev/urandom | head -c 13 > $DOMAIN.passphrase
+
+ 
+
+docker run --rm -v "$PWD:/app" -w /app mcr.microsoft.com/dotnet/sdk:6.0 dotnet new webapi -n MyRestApi
+
+ 
+
+ 
+
+ 
+
+docker run --rm -it mcr.microsoft.com/azure-powershell:latest
+
+ 
+
+Connect-AzAccount -UseDeviceAuthentication
+
+ 
+
+# for each subscription in context
+
+foreach ($subId in (Get-AzSubscription).Id | Get-Unique) {
+
+   write-host "Subscription $subId"
+
+ 
+
+   # set context to the given subId
+
+   Set-AzContext -SubscriptionId $subId
+
+ 
+
+   # List the name and InstrumentationKey of all Application Insights resources in this sub
+
+   Get-AzResource -ResourceType Microsoft.Insights/components -ExpandProperties | select -ExpandProperty Properties | select Name, InstrumentationKey | ft
+
+}
+
+ 
+
+ 
+
+while read p; do
+
+  stringarray=($p)
+
+  length=${#stringarray[@]}
+
+  echo $length
+
+  if [ "$length" != "0" ]; then
+
+    echo ${stringarray[3]}
+
+  fi
+
+done </tmp/appinsightslist.txt
+
+ 
+
+ 
+
+vim ~/workspace/scratch/appinsightslist.txt
+
+ 
+
+while read p; do
+
+  az role assignment create --role "Log Analytics Reader" --scope $p --assignee "0fbd9ab8-09f9-487b-b3be-5f9fc69fcbea"
+
+done <~/workspace/scratch/appinsightslist.txt
+
+ 
+
+while read p; do
+
+  az role assignment delete --role "Log Analytics Reader" --scope $p --assignee "0fbd9ab8-09f9-487b-b3be-5f9fc69fcbea"
+
+done <~/workspace/scratch/appinsightslist.txt
+
+ 
+
+echo "HISTCONTROL=ignoreboth" >>~/.bashrc
+
+ 
+
+ 
+
+git commit --allow-empty -m "Empty-Commit"
+
+ 
+
+ 
+
+account_id="$(aws sts get-caller-identity --query "Account" --output text)"
+
+ 
+
+ 
+
+docker run --rm -v ".:/app" -w /app mcr.microsoft.com/dotnet/sdk:7.0 dotnet new webapi -o TodoApi
+
+
+
+
+Mon Dec  4 10:18:01 AST 2023
+
+
+wget https://training.linuxfoundation.org/cm/LFS260/LFS260_V2022-03-25_SOLUTIONS.tar.xz --user=LFtraining --password=Penguin2014
+
+
+tar -xvf LFS260_V2022-03-25_SOLUTIONS.tar.xz
+
+
+ssh-keygen -f "/home/jedsall/.ssh/known_hosts" -R "707703c12c1c.mylabserver.com"
+ssh -Y cloud_user@707703c12c1c.mylabserver.com
+ssh-copy-id cloud_user@707703c12c1c.mylabserver.com
+
+
+
+ssh-keygen -f "/home/jedsall/.ssh/known_hosts" -R "707703c12c2c.mylabserver.com"
+ssh -Y cloud_user@707703c12c2c.mylabserver.com
+ssh-copy-id cloud_user@707703c12c2c.mylabserver.com
+
+
+export AWS_SESSION_TOKEN_TTL=12h
+
+
+
+./LFS260/SOLUTIONS/s_04/k8scp.sh
+./LFS260/SOLUTIONS/s_04/k8sWorker.sh
+
+
+./LFS260/SOLUTIONS/s_04/setupscript.sh
+
+kubectl describe nodes | grep -i Taint
+kubectl taint nodes --all node-role.kubernetes.io/master-
+
+curl -L https://github.com/aquasecurity/kube-bench/releases/download/v0.6.6/kube-bench_0.6.6_linux_amd64.deb -o  kube-bench_0.6.6_linux_amd64.deb
+sudo apt install ./kube-bench_0.6.6_linux_amd64.deb
+sudo kube-bench
+
+
+mkdir gk
+
+cd gk
+
+wget https://raw.githubusercontent.com/open-policy-agent/gatekeeper/master/deploy/gatekeeper.yaml
+
+more gatekeeper.yaml
+
+
+
+export TOKEN=$(cat /run/secrets/kubernetes.io/serviceaccount/token)
+
+curl -H "Authorization: Bearer $TOKEN" \https://kubernetes.default:443/api/v1 --insecure
+
+curl -H "Authorization: Bearer $TOKEN" \https://kubernetes.default:443/api/v1/namespaces/prod-b/pods/ --insecure
+
+
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: prod-b
+  name: sa-role
+rules:
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["list"]
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: sa-role-bind
+  namespace: prod-b
+subjects:
+- kind: ServiceAccount
+  name: simple-sa
+  namespace: prod-b
+  roleRef:
+    kind: Role
+    name: sa-role
+    apiGroup: rbac.authorization.k8s.io
+
+
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: no-priv
+spec:
+  privileged: false
+  runAsUser:
+    rule: MustRunAsNonRoot
+  seLinux:
+    rule: RunAsAny
+  fsGroup:
+    rule: RunAsAny
+  supplementalGroups:
+    rule: RunAsAny
+  volumes:
+  - '*'
+
+    - --audit-log-maxage=7
+- --audit-log-maxbackup=2                                 #<-- Max number to retain
+- --audit-log-maxsize=50                                  #<-- Meg size when to rotate
+- --audit-log-path=/var/log/audit.log                     #<-- Where to log
+- --audit-policy-file=/home/ubuntu/LFS260/SOLUTIONS/s_05/simple-policy.yaml  #<-- Audit policy file
+
+
+
+
+apiVersion: v1
+kind: Config
+clusters:
+- cluster:
+    server: http://172.55.55.22:8765/k8s-audit
+  name: falco
+contexts:
+- context:
+    cluster: falco
+    user: ""
+  name: default-context
+current-context: default-context
+preferences: {}
+users: []
+
+
+./docker-bench-security.sh
+
+
+sudo docker-compose exec clairctl clairctl analyze -l nginx
+sudo docker-compose exec clairctl clairctl report -l nginx
+find $HOME -name analysis-nginx-latest.html
+
+
+sudo trivy -i nginx.tar
+sudo trivy image --severity CRITICAL nginx:1.9.1
+
+
+sudo journalctl -u falco.service -f
+
+
+sudo apparmor_status
+sudo aa-genprof /usr/bin/kubectl
+sudo ln -s /etc/apparmor.d/usr.bin.docker /etc/apparmor.d/disable/
+sudo apparmor_parser -R /etc/apparmor.d/usr.bin.docker
+
+
+DIR=/etc/kubernetes/pki/
+SSL_OPTS="--cacert=${DIR}/etcd/ca.crt --cert=${DIR}/apiserver-etcd-client.crt --key=${DIR}/apiserver-etcd-client.key --endpoints=localhost:2379"
+SECRETS_PATH=/registry/secrets
+
+kind: K8sRequiredRegistry
+metadata:
+  name: only-quay-images
+spec:
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+  parameters:
+    registry: "quay.io/"
+
+/registry/secrets/$namespace/$secret
+
+
+
+
+curl -s https://falco.org/repo/falcosecurity-packages.asc | sudo apt-key add -
+
+echo "deb https://download.falco.org/packages/deb stable main" | sudo tee -a /etc/apt/sources.list.d/falcosecurity.list
+
+sudo apt-get update -y
+
+sudo apt-get -y install linux-headers-$(uname -r)
+
+sudo apt-get install -y falco
+
+sudo systemctl enable falco
+
+sudo systemctl start falco
+
+sudo systemctl status falco
+
+sudo cat /etc/falco/falco.yaml
+
+sudo cat /etc/falco/k8s_audit_rules.yaml
+
+openssl req -newkey rsa:2048 -nodes -keyout key.pem -x509 -days 365 -out certificate.pem
+
+cat certificate.pem key.pem > falco.pem
+
+sudo cp falco.pem /etc/falco/falco.pem
+
+sudo apt install -y net-tools
+
+sudo systemctl restart falco.service
+
+sudo systemctl status falco.service
+
+sudo journalctl -u falco.service -f
+
+sudo cat /etc/shadow > /dev/null
+
+sudo vim /etc/kubernetes/manifests/kube-apiserver.yaml
+
+sudo find $HOME -name falco-audit.yaml
+
+    - --audit-log-maxage=7
+    - --audit-log-maxbackup=2                                 #<-- Max number to retain
+    - --audit-log-maxsize=50                                  #<-- Meg size when to rotate
+    - --audit-log-path=/var/log/audit.log                     #<-- Where to log
+    - --audit-policy-file=/etc/kubernetes/falco-audit.yaml    #<-- Audit policy file
+
+
+    - mountPath: /etc/kubernetes/falco-audit.yaml
+      name: audit
+      readOnly: true
+    - mountPath: /var/log/audit.log
+      name: audit-log
+      readOnly: false
+
+  - name: audit
+    hostPath:
+      path: /etc/kubernetes/falco-audit.yaml
+      type: File
+  - name: audit-log
+    hostPath:
+      path: /var/log/audit.log
+      type: FileOrCreate
+
+
+sudo vim /etc/kubernetes/audit-webhook-kubeconfig
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+sudo apt-get install apparmor-utils -y
+
+sudo apparmor_status
+
+sudo aa-genprof /usr/bin/kubectl
+
+kubectl create deployment genprof --image=fluentd/fluent
+
+kubectl edit deploy genprof
+
+
+
+sudo aa-genprof /usr/bin/docker
+
+sudo docker run --name profile-nginx -v /my/webpage:/usr/share/nginx/html:ro -d nginx
+
+cd /etc/apparmor.d ; ls -l
+
+cd
+
+sudo ln -s /etc/apparmor.d/usr.bin.docker /etc/apparmor.d/disable/
+sudo apparmor_parser -R /etc/apparmor.d/usr.bin.docker
+
+sudo apparmor_status
+
+
+sudo rm /etc/apparmor.d/disable/usr.bin.docker
+sudo apparmor_parser -r /etc/apparmor.d/usr.bin.docker
+
+sudo apparmor_status
+
+
+
+
+
+sudo docker run --name tracee --rm --privileged --pid=host -v /lib/modules/:/lib/modules/:ro -v /usr/src:/usr/src:ro -v /tmp/tracee:/tmp/tracee aquasec/tracee:0.4.0 -h
+
+sudo docker run --name tracee --rm --privileged --pid=host -v /lib/modules/:/lib/modules/:ro -v /usr/src:/usr/src:ro -v /tmp/tracee:/tmp/tracee aquasec/tracee:0.4.0 --trace container=new
+--- FAILS ---
+
+
+
+
+
+
+Links -
+Bastion stuff:
+https://learn.microsoft.com/en-us/microsoft-identity-manager/pam/planning-bastion-environment
+https://www.linkedin.com/pulse/best-practices-ssh-bastion-hosts-taofeek-bello
+https://www.reddit.com/r/linuxadmin/comments/s36hfh/ssh_bastion_host_best_practices_how_to_build_and/
+https://github.com/dev-sec/ansible-collection-hardening/tree/master/roles/ssh_hardening
+https://aws.amazon.com/solutions/implementations/linux-bastion/
+https://goteleport.com/blog/security-hardening-ssh-bastion-best-practices/
+https://goteleport.com/blog/ssh-bastion-host/
+
+DMZ stuff:
+https://www.techtarget.com/searchsecurity/definition/DMZ
+https://www.okta.com/identity-101/dmz/
+https://www.fortinet.com/resources/cyberglossary/what-is-dmz
+https://www.reddit.com/r/fortinet/comments/q3g8ti/difference_between_dmz_and_a_second_subnet/
+https://www.linkedin.com/pulse/strengthening-network-security-firewall-dmz-hardening-denisov-ms#:~:text=Isolation%3A%20Isolate%20servers%20in%20the,with%20security%20patches%20and%20updates.
+https://securityboulevard.com/2019/11/4-dmz-best-practices-to-shield-you-from-attackers-2/
+
+Packer stuff:
+https://developer.hashicorp.com/packer/tutorials/aws-get-started/aws-get-started-build-image
+https://hub.docker.com/r/hashicorp/packer
+https://devopscube.com/packer-tutorial-for-beginners/#Building_VM_Image_AWS_AMI_Using_Packer
+https://schh.medium.com/getting-started-with-packer-2289752de51a
+
+TFUAR:
+https://github.com/brikis98/terraform-up-and-running-code/tree/3rd-edition/code
+
+SGs and NACLs:
+https://www.google.com/search?q=aws+security+groups+instance+level&sca_esv=581581605&sxsrf=AM9HkKmXjWjDGnlM0OjmF0giGAwJP8wC7A%3A1699739798767&ei=lvhPZbCxLsir5NoP-uOQ8Ac&oq=aws+security+group+instance&gs_lp=Egxnd3Mtd2l6LXNlcnAiG2F3cyBzZWN1cml0eSBncm91cCBpbnN0YW5jZSoCCAAyBhAAGBYYHjIGEAAYFhgeMgYQABgWGB4yBhAAGBYYHjIGEAAYFhgeMgYQABgWGB4yCBAAGBYYHhgPMgYQABgWGB4yBhAAGBYYHjIGEAAYFhgeSLNiUPYRWIxScAN4AZABAJgBdaAB5RKqAQQyMy40uAEByAEA-AEBwgIKEAAYRxjWBBiwA8ICCBAAGIoFGJECwgIREC4YgwEYxwEYsQMY0QMYgATCAgsQABiKBRixAxiDAcICDhAuGIAEGLEDGMcBGNEDwgILEAAYgAQYsQMYgwHCAgUQABiABMICCxAuGIoFGLEDGIMBwgIREC4YgAQYsQMYgwEYxwEY0QPCAgsQLhiABBixAxiDAcICBxAjGIoFGCfCAhQQLhiKBRixAxiDARjHARjRAxiRAsICDRAuGIoFGLEDGIMBGEPCAgcQABiKBRhDwgITEC4YigUYsQMYgwEYxwEY0QMYQ8ICEBAuGIoFGLEDGMcBGNEDGEPCAgoQABiKBRixAxhDwgINEAAYigUYsQMYgwEYQ8ICCxAuGIAEGMcBGNEDwgIaEC4YgAQYxwEY0QMYlwUY3AQY3gQY4ATYAQHiAwQYACBBiAYBkAYIugYGCAEQARgU&sclient=gws-wiz-serp
+https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/security-group-rules.html
+https://docs.aws.amazon.com/vpc/latest/userguide/vpc-security-groups.html
+https://cloudacademy.com/blog/aws-security-groups-instance-level-security/#:~:text=AWS%20security%20groups%20(SGs)%20are,out%20of%20an%20EC2%20instance.
+https://medium.com/awesome-cloud/aws-difference-between-security-groups-and-network-acls-adc632ea29ae#id_token=eyJhbGciOiJSUzI1NiIsImtpZCI6ImY4MzNlOGE3ZmUzZmU0Yjg3ODk0ODIxOWExNjg0YWZhMzczY2E4NmYiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiIyMTYyOTYwMzU4MzQtazFrNnFlMDYwczJ0cDJhMmphbTRsamRjbXMwMHN0dGcuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiIyMTYyOTYwMzU4MzQtazFrNnFlMDYwczJ0cDJhMmphbTRsamRjbXMwMHN0dGcuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMDM1MDI1MDMwMTA5MTM3MzUzNTAiLCJlbWFpbCI6InZpbmNlbnQubWFjZG9uYWxkMTk4N0BnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwibmJmIjoxNjk5Nzk1NjU4LCJuYW1lIjoiVmluY2VudCBNYWNEb25hbGQgKEp1c3RBbm90aGVyQ2xvdWREZXYpIiwicGljdHVyZSI6Imh0dHBzOi8vbGgzLmdvb2dsZXVzZXJjb250ZW50LmNvbS9hL0FDZzhvY0wwUXI0bVdnRDdfdk1WOXFhZ25lOUlaQVFLSGE5SXVoM1NvaU1Sc0tMRT1zOTYtYyIsImdpdmVuX25hbWUiOiJWaW5jZW50IiwiZmFtaWx5X25hbWUiOiJNYWNEb25hbGQiLCJsb2NhbGUiOiJlbiIsImlhdCI6MTY5OTc5NTk1OCwiZXhwIjoxNjk5Nzk5NTU4LCJqdGkiOiIxNWVmYzNhNDY3ZGE1YWU4ZGZjMTVjMDBhM2QzOTUyNDUwZWQ3ZjYyIn0.Hd3UCNGrmxNgK1eKPNvOnEIHoCzzJfrFba-UCgMoqd6yIJnBzcRyKAtRSGq4SsxO0H8barcA87w-2tb7xLV5d5edgsTgfFYs8goEMwk55iwN2Iv8U1WSX1-juADX51m_mQw9KZgpFlan5gX5zwLa73-kUJjZlRKT2_z-y0Yum4-raJlXVktNHmW67mbnaDElCJDHxrBDjRVlClKGyJCV7cVw7pDD_zRQYzw4gAsI-SKvEN65K1umTzccbnPKll7YW8kIllpI94vKugwXCp1KuA8dNyO3gc-5ZWc9aDqWV1LoZkw21le5EDDIzLhpRxQmJoBQmjCcySSFYvmhx7UyJQ
+(Also NATs:
+https://dev.to/aws-builders/aws-networking-aws-vpc-subnets-security-groups-nat-gateway-ip-addresses-4p8c
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Logs:
+
+Created three repos, one for modules, one to test live deployment, and one to display live deployment.
+
+Clone the repo with the identity-specific ssh-key:
+git clone -c "core.sshCommand=ssh -i ~/.ssh/id_jor_interview_ed25519 -F /dev/null" git@github.com:nope/terraform-aws-modules-general.git
+
+Starting out with the packer tutorial from:
+https://developer.hashicorp.com/packer/tutorials/aws-get-started/aws-get-started-build-image
+
+And packer init with docker:
+docker run \
+    -v `pwd`:/workspace -w /workspace \
+    -e PACKER_PLUGIN_PATH=/workspace/.packer.d/plugins \
+    hashicorp/packer:latest \
+    init .
+
+aws-vault exec --backend=pass orig-aws-jeds
+
+docker run \
+-v `pwd`:/workspace -w /workspace \
+-e PACKER_PLUGIN_PATH=/workspace/.packer.d/plugins \
+-e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
+-e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
+-e AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN \
+hashicorp/packer:latest \
+build aws-ubuntu.pkr.hcl
+
+
+
+Using docker with terratest meant installing the terraform binary in the image with a Dockerfile like:
+
+FROM golang:latest
+
+RUN apt update && apt install -y lsb-release
+
+RUN wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+RUN echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/hashicorp.list
+RUN apt update && apt install terraform
+
+WORKDIR $GOPATH/src/app/test/
+
+
+Running terratest menas mounting both the examples and the test folder, using bash -c 'command;command':
+
+docker run -it --rm -v "$PWD":/usr/src/myapp -w /usr/src/myapp test-go-terratest bash -c 'cd test; go test -v -timeout 30m'
+
+Terratest from inside AWS-vault shell:
+docker run -it --rm -v "$PWD":/usr/src/myapp \
+    -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
+    -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
+    -e AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN \
+    -w /usr/src/myapp test-go-terratest bash -c 'cd test; go test -v -timeout 30m'
+
+go mod init "github.com/<YOUR_USERNAME>/<YOUR_REPO_NAME>"
+go mod tidy
+go test -v -timeout 30m
+
+Building a Docker container similar to this for BOTO3 experimentation:
+https://medium.com/@aaloktrivedi/building-an-aws-boto3-python-environment-with-docker-compose-a9984bb6cbdc
+
+Note - modified for 'apt' and to install a specific AWS CLI as the latest was broken
+
+Dockerfile:
+FROM python:3.12
+
+#update, install curl, git, zip/unzip
+RUN apt update && apt install -y curl zip git unzip less
+
+#install aws cli
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.13.33.zip" -o "awscliv2.zip" \
+    && unzip awscliv2.zip \
+    && ./aws/install -i /usr/local/aws-cli -b /usr/local/bin \
+    && rm awscliv2.zip
+
+#create/change woorking directory
+WORKDIR /home/app
+
+#copy requirements file
+COPY requirements.txt .
+
+#install dependencies
+RUN pip install -r requirements.txt
+
+
+
+
+docker build . -t test-boto3-python3-12 --progress=plain --no-cache
+
+docker run -it --rm -v "$PWD":/home/app \
+    -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
+    -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
+    -e AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN \
+    test-boto3-python3-12 bash
+
+
+
+We have a go linter problem... could it be because the .mod and .sum are not in the root of the repo?
+Running this from within devcontainer works:
+golangci-lint run -v main.go
+
+terraform apply -var name=blah -var db_username=username -var db_password=username -var db_name=example_db
+
+mysql --host=blah.czwfk0uucup1.us-east-2.rds.amazonaws.com --user=username --password=usename -Bse ""
+
+
+
+
+Process for image details collection:
+
+Get the instance IDs currently running, for each one check if we have its AMI as a key in our dict. If we don't then create the dict. Add the instance ID to an 'InstanceIds' list in that dict.
+
+Grab the list of keys in our dict and call the image details.
+
+Iterate through the image details and use the AMI to determine where in the dict to insert (ImageDes, ImageName, ImageLoc, OwnerId)
+
+Delete an image to make sure we can handle nulls.
+
+Disposable AMI to test nulls:
+ami-03a5f3d666e147ed7
+
+
+
+sudo apt-get install docker-compose -y
+
+git clone https://github.com/Charlie-belmer/Docker-security-example.git
+
+cd Docker-security-example/clair
+
+sudo docker-compose up
+
+
+sudo docker-compose exec clairctl clairctl analyze -l nginx
+
+
+
+sudo apt-get install docker-compose -y; git clone https://github.com/Charlie-belmer/Docker-security-example.git; cd Docker-security-example/clair; sudo docker-compose up
+
+
+
+sudo apt-get install wget apt-transport-https gnupg lsb-release -y
+
+wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+
+echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list.d/trivy.list
+
+sudo docker save nginx -o nginx.tar
+
+sudo trivy -i nginx.tar
+
+
+****************************************************************
+Doesn't quite work!
+kubectl create ns test-namespace
+
+openssl genrsa -out user1.key 2048
+openssl req -new -key user1.key -out user1.csr
+
+openssl x509 -req -in user1.csr -CA /etc/kubernetes/pki/ca.crt -CAkey /etc/kubernetes/pki/ca.key -CAcreateserial -out user1.crt -days 500
+
+cat << EOF | kubectl apply -f -
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  namespace: test-namespace
+  name: user1-role
+rules:
+  - apiGroups: ["", “extensions”, “apps”]
+    resources: [“deployments”, “pods”, “services”]
+    verbs: [“get”, “list”, “watch”, “create”, “update”, “patch”, “delete”]
+EOF
+
+
+cat << EOF | kubectl apply -f -
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: user1-rolebinding
+  namespace: test-namespace
+subjects:
+  - kind: User
+    name: user1
+    apiGroup: ""
+roleRef:
+  kind: Role
+  name: user1-role
+  apiGroup: ""
+EOF
+
+kubectl config set-credentials user1 --client-certificate=user1.crt --client-key=user1.key
+
+kubectl config set-context user1-context --cluster=kubernetes --namespace=test-namespace --user=user1
+***********************************************
+
+
+
+
+CLUSTERNAME=mycluster.mydomain
+NAMESPACE=default
+USERNAME=myclusteruser
+GROUPNAME=mygroup
+
+openssl genrsa -out ${USERNAME}.key 2048
+
+CSR_FILE=$USERNAME.csr
+KEY_FILE=$USERNAME.key
+
+openssl req -new -key $KEY_FILE -out $CSR_FILE -subj "/CN=$USERNAME/O=$GROUPNAME"
+
+CERTIFICATE_NAME=$USERNAME.$NAMESPACE
+
+cat <<EOF | kubectl create -f -
+apiVersion: certificates.k8s.io/v1
+kind: CertificateSigningRequest
+metadata:
+  name: $CERTIFICATE_NAME
+spec:
+  signerName: kubernetes.io/kube-apiserver-client
+  groups:
+  - system:authenticated
+  request: $(cat $CSR_FILE | base64 | tr -d '\n')
+  usages:
+  - digital signature
+  - key encipherment
+  - server auth
+EOF
+
+kubectl certificate approve $CERTIFICATE_NAME
+
+CRT_FILE=$USERNAME.crt
+
+kubectl get csr $CERTIFICATE_NAME -o jsonpath='{.status.certificate}'  | base64 -D > $CRT_FILE
+
+cat <<EOF | kubectl create -f -
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  namespace: $NAMESPACE
+  name: deployment-manager
+rules:
+- apiGroups: ["", "extensions", "apps"]
+  resources: ["deployments", "replicasets", "pods"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"] # You can also use ["*"]
+EOF
+
+
+cat <<EOF | kubectl create -f -
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: $USERNAME-deployment-manager-binding
+  namespace: $NAMESPACE
+subjects:
+- kind: User
+  name: $USERNAME
+  apiGroup: ""
+roleRef:
+  kind: Role
+  name: deployment-manager
+  apiGroup: ""
+EOF
+
+kubectl config set-credentials $USERNAME \
+  --client-certificate=$(pwd)/$CRT_FILE \
+  --client-key=$(pwd)/$KEY_FILE
+
+kubectl config set-context $USERNAME-context --cluster=$CLUSTERNAME --namespace=$NAMESPACE --user=$USERNAME
+
+
+
+
+######################## Install Falco! ###########################
+
+
+curl -s https://falco.org/repo/falcosecurity-packages.asc | sudo apt-key add -
+
+echo "deb https://download.falco.org/packages/deb stable main" | sudo tee -a /etc/apt/sources.list.d/falcosecurity.list
+
+sudo apt-get update -y
+
+sudo apt-get -y install linux-headers-$(uname -r)
+
+sudo apt-get install -y falco=0.33.1
+
+sudo systemctl enable falco
+
+sudo systemctl start falco
+
+sudo systemctl status falco
+
+
+###################################################################
+
+    - --audit-log-maxage=7
+    - --audit-log-maxbackup=2                                 #<-- Max number to retain
+    - --audit-log-maxsize=50                                  #<-- Meg size when to rotate
+    - --audit-log-path=/var/log/audit.log                     #<-- Where to log
+    - --audit-policy-file=/etc/kubernetes/audit-policy.yaml   #<-- Audit policy file
+    - --audit-webhook-config-file=/etc/kubernetes/falco-webhook.yaml
+
+
+    - mountPath: /etc/kubernetes/falco-audit.yaml
+      name: audit
+      readOnly: true
+    - mountPath: /etc/kubernetes/falco-webhook.yaml
+      name: webhook
+      readOnly: true
+    - mountPath: /var/log/audit.log
+      name: audit-log
+      readOnly: false
+
+  - name: audit
+    hostPath:
+      path: /etc/kubernetes/falco-audit.yaml
+      type: File
+  - name: webhook
+    hostPath:
+      path: /etc/kubernetes/falco-webhook.yaml
+      type: File
+  - name: audit-log
+    hostPath:
+      path: /var/log/audit.log
+      type: FileOrCreate
+
+    ePR_number_success_Examples_undefined = len(search("Define", ePR_number_success_Examples)) > 0
+
+for i in `find . -name '*tf'`; do sed -i '' 's/v0.2.10/v0.2.13/g' $i; done
+
+sudo hwclock -s
+
+aws-vault exec --backend=pass orig-aws-jeds --
+echo "$AWS_ACCESS_KEY_ID $AWS_SECRET_ACCESS_KEY $AWS_SESSION_TOKEN"
+
+# See output from docker build!
+docker build . -t test-go-terratest --progress=plain --no-cache
+
+export AWS_SESSION_TOKEN_TTL=11h
+
+root@c1c4b88787b3:/tmp# python
+Python 3.12.0 (main, Nov  1 2023, 12:56:53) [GCC 12.2.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import boto3
+>>> s3 = boto3.resource('s3')
+>>> for bucket in s3.buckets.all():
+...     print(bucket.name)
+...
+tfuar3-tf-state
+
+
+
+import boto3
+
+client = boto3.client('s3', region_name='us-west-2')
+
+ec2 = boto3.client('ec2', region_name='us-east-2')
+paginator = ec2.get_paginator('describe_instances')
+
+for page in paginator.paginate():
+ for res in page['Reservations']:
+   for inst in res['Instances']:
+     print( inst['InstanceId'])
+
+
+
+echo "export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID";echo "export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY";echo "export AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN"
+
+terraform apply -var db_username=username -var db_password=username -var db_name=example_db
+
+
+# Run superlinter locally
+docker run \
+  -e ACTIONS_RUNNER_DEBUG=true \
+  -e RUN_LOCAL=true \
+  -v /home/jedsall/workspace/interviews/terraform-aws-modules-general:/tmp/lint \
+  ghcr.io/super-linter/super-linter:latest
+ 
+docker run \
+  -e ACTIONS_RUNNER_DEBUG=true \
+  -e RUN_LOCAL=true \
+  -v $(pwd):/tmp/lint \
+  ghcr.io/super-linter/super-linter:latest
+
+# Show text and save to file at the same time
+echo "This is some text" | tee -a /dev/tty 2>&1 /tmp/file
+
+# Hi hey ho
+{ echo -e "\n\nhi"; sleep 2; echo -e "ho\n\n"; sleep 1; } & echo ""; sleep 1; echo hey; sleep 2;
+
+# Watch live and log to file
+docker run -e ACTIONS_RUNNER_DEBUG=true -e RUN_LOCAL=true -v $(pwd):/tmp/lint ghcr.io/super-linter/super-linter:latest > /tmp/file 2>&1 & sleep 1; tail -f /tmp/file
+
+# Add this to just see errors!
+| grep -C 15 -F [ERR
+
+
+postgres=# CREATE DATABASE justforfun;
+SELECT datname FROM pg_catalog.pg_database;
+CREATE DATABASE
+  datname
+------------
+ postgres
+ justforfun
+ template1
+ template0
+(4 rows)
+
+postgres=# exit.
+postgres-# exit
+Use \q to quit.
+postgres-# \q
+
+
+x=1; while  [ $x -le 5 ]; do echo "Welcome $x times" $(( x++ )); done
+
+x=1
+echo "blob"
+while  [ $? -le 5 ]; do
+  sleep 1
+  echo "Welcome $x times" $(( x++ ))
+done
+
+git clone -c "core.sshCommand=ssh -i ~/.ssh/id_nope_ed25519 -F /dev/null" git@github.com:je-nope/terraform-github-orchestrator.git
+
+
+docker run \
+    -it \
+    --rm \
+    -v $(pwd):/openscad \
+    -u $(id -u ${USER}):$(id -g ${USER}) \
+    openscad/openscad:latest \
+    openscad -o out_test.stl src/tools/calibration/block_calibratrix.scad
+
+time docker run \
+    -it \
+    --rm \
+    -v $(pwd):/openscad \
+    -u $(id -u ${USER}):$(id -g ${USER}) \
+    openscad/openscad:latest \
+    openscad -o out_test_l.stl -D 'cCR_calibratrix_runner_execution_mode="l_calibratrix"' src/tools/calibration/block_calibratrix.scad
+
+tree -L 2
+
+# Create an ssh key for nope
+
+ssh-keygen -t ed25519 -C "nope@gmail.com"
+
+git clone -c "core.sshCommand=ssh -i ~/.ssh/nope -F /dev/null" git@github.com:nope/aca-auth.git
+
+
+curl --header "Content-Type: application/json" -X POST https://E63F3.playfabapi.com/Client/LoginWithCustomID --data '{"TitleId":"E63F3", "CustomId":"3BE1045A4AEC2BC", "CreateAccount":"True"}'
+
+
+
+ terraform apply --var atlantis_github_user=nope--var domain=nope.net --var github_owner=nope--var github_token
+
+
+Download [cfn vpc yaml](https://docs.aws.amazon.com/codebuild/latest/userguide/samples/samples.zip) and pull the file out.
+(codebuild-vpn-cfn)
+
+Deploy the stack to us-east-1 via CLI:
+```aws cloudformation create-stack --stack-name myteststack --template-body file:///workspaces/tf-ecs-cognito/codebuild-vpc-cfn.yaml --region us-east-1 --parameters ParameterKey=EnvironmentName,ParameterValue=Example```
+
+(Note that names do not match the blog.)
+
+Export env vars:
+```
+AUTH_ECS_REGION=us-east-1
+AUTH_ECS_CLUSTER=ecsauth
+AUTH_ECS_VPC=$(aws cloudformation describe-stacks --stack-name myteststack --query "Stacks[0].Outputs[?OutputKey=='VPC'].OutputValue" --output text)
+AUTH_ECS_PUBLICSUBNET_1=$(aws cloudformation describe-stacks --stack-name myteststack --query "Stacks[0].Outputs[?OutputKey=='PublicSubnet1'].OutputValue" --output text)
+AUTH_ECS_PUBLICSUBNET_2=$(aws cloudformation describe-stacks --stack-name myteststack --query "Stacks[0].Outputs[?OutputKey=='PublicSubnet2'].OutputValue" --output text)
+AUTH_ECS_PRIVATESUBNET_1=$(aws cloudformation describe-stacks --stack-name myteststack --query "Stacks[0].Outputs[?OutputKey=='PrivateSubnet1'].OutputValue" --output text)
+AUTH_ECS_PRIVATESUBNET_2=$(aws cloudformation describe-stacks --stack-name myteststack --query "Stacks[0].Outputs[?OutputKey=='PrivateSubnet2'].OutputValue" --output text)
+AUTH_ECS_SG=$(aws cloudformation describe-stacks --stack-name myteststack --query "Stacks[0].Outputs[?OutputKey=='NoIngressSecurityGroup'].OutputValue" --output text)
+AUTH_ECS_DOMAIN=example.net
+```
+
+Configure some SGs:
+```
+aws ec2 authorize-security-group-ingress \
+  --group-id $AUTH_ECS_SG \
+  --protocol tcp \
+  --port 443 \
+  --cidr 0.0.0.0/0
+ 
+aws ec2 authorize-security-group-ingress \
+--group-id $AUTH_ECS_SG \
+--protocol tcp \
+--port 80 \
+--cidr 0.0.0.0/0
+```
+
+Create an ALB:
+```
+AUTH_ECS_ALBARN=$(aws elbv2 create-load-balancer --name $AUTH_ECS_CLUSTER --subnets $AUTH_ECS_PUBLICSUBNET_1 $AUTH_ECS_PUBLICSUBNET_2 --security-groups $AUTH_ECS_SG --query 'LoadBalancers[0].LoadBalancerArn' --output text)
+
+AUTH_ECS_ALB_DNS=$(aws elbv2 describe-load-balancers --load-balancer-arns $AUTH_ECS_ALBARN --query 'LoadBalancers[0].DNSName' --output text)
+```
+
+Grab your hosted zone:
+```AUTH_ECS_R53HZ=$(aws route53 list-hosted-zones-by-name --dns-name $AUTH_ECS_DOMAIN --query 'HostedZones[0].Id'  --output text | grep -o '/hostedzone/.*' | cut -b 13-27) ```
+
+
+find . -name '.terragrunt-cache'
+find . -name '.terraform'
+find . -name '.terraform.lock.hcl'
+
+rm -rf `find . -name '.terragrunt-cache'`; rm -rf `find . -name '.terraform'`
+
+docker run -d \
+   -v /home/jedsall/workspace/productivity:/vaults \
+   -p 8080:8080 \
+   --name obsidian-remote \
+   ghcr.io/sytone/obsidian-remote:latest
+
+echo hi
+
+INSTALL_PYTHON_TOOLS="${INSTALLTOOLS:-"true"}"
+
+
+aws-vault exec --backend=pass orig-aws-jeds
+echo -e " export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID;\n export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY;\n export AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN"
+
+
+
+
+For dockerfile:
+```
+FROM golang:latest
+
+RUN apt update && apt install -y lsb-release
+
+RUN wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+RUN echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/hashicorp.list
+RUN apt update && apt install terraform
+
+WORKDIR $GOPATH/src/app/test/
+```
+
+docker build . -f Dockerfile.ci -t test-terraform-aws-modules-general-terratest
+
+docker run -it --rm -v "$PWD":/usr/src/myapp \
+    -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
+    -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
+    -e AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN \
+    -w /usr/src/myapp \
+test-terraform-aws-modules-general-terratest bash -c 'cd test/unit; go test -v -timeout 30m'
